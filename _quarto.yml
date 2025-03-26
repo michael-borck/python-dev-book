@@ -54,4 +54,4 @@ format:
     colorlinks: true
   epub:
     toc: true
-    cover-image: images/book-cover.png
+    cover-image: images/cover.png
