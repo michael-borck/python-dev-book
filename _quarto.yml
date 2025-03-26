@@ -36,6 +36,7 @@ book:
   repo-actions: [edit, issue]
   downloads: [pdf, epub]
   sharing: [twitter, facebook, linkedin]
+  site-url: https://yourusername.github.io/python-dev-book/
 
 format:
   html:
@@ -43,18 +44,14 @@ format:
     code-copy: true
     code-tools: true
     toc: true
+    metadata:
+      title: "From Zero to Production: A Practical Python Development Pipeline"
+      description: "A comprehensive guide to Python development practices, tools, and workflows"
+      keywords: "python, development, best practices, testing, CI/CD, packaging"
+    sitemap: true
   pdf:
     documentclass: scrbook
     colorlinks: true
   epub:
     toc: true
     cover-image: images/cover.png
-
-website:
-  site-url: https://yourusername.github.io/python-dev-book/
-  sitemap: true
-  
-metadata:
-  title: "From Zero to Production: A Practical Python Development Pipeline"
-  description: "A comprehensive guide to Python development practices, tools, and workflows"
-  keywords: "python, development, best practices, testing, CI/CD, packaging"
