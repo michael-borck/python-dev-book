@@ -19,9 +19,18 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         
-      - name: Install TinyTeX
+      - name: Install TinyTeX directly
         run: |
-          quarto install tinytex
+          # Install TinyTeX using the direct installer rather than quarto's command
+          wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+          # Add TinyTeX to PATH
+          echo "$HOME/.TinyTeX/bin/x86_64-linux" >> $GITHUB_PATH
+          # Test LaTeX installation
+          tlmgr --version
+          
+      - name: Ensure images directory exists
+        run: |
+          mkdir -p images
           
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
