@@ -1,0 +1,85 @@
+
+# Appendix B: Glossary of Python Development Terms
+
+## A
+
+- **API (Application Programming Interface)**: A set of definitions and protocols for building and integrating application software.
+- **Artifact**: Any file or package produced during the software development process, such as documentation or distribution packages.
+
+## C
+
+- **CI/CD (Continuous Integration/Continuous Deployment)**: Practices where code changes are automatically tested (CI) and deployed to production (CD) when they pass quality checks.
+- **CLI (Command Line Interface)**: A text-based interface for interacting with software using commands.
+- **Code Coverage**: A measure of how much of your code is executed during testing.
+- **Code Linting**: The process of analyzing code for potential errors, style issues, and suspicious constructs.
+
+## D
+
+- **Dependency**: An external package or module that your project requires to function properly.
+- **Docstring**: A string literal specified in source code that is used to document a specific segment of code.
+- **Dynamic Typing**: A programming language feature where variable types are checked during runtime rather than compile time.
+
+## E
+
+- **Entry Point**: A function or method that serves as an access point to an application, module, or library.
+
+## F
+
+- **Fixture**: In testing, a piece of code that sets up a system for testing and provides test data.
+
+## I
+
+- **Integration Testing**: Testing how different parts of the system work together.
+
+## L
+
+- **Lock File**: A file that records the exact versions of dependencies needed by a project to ensure reproducible installations.
+
+## M
+
+- **Mocking**: Simulating the behavior of real objects in controlled ways during testing.
+- **Module**: A file containing Python code that can be imported and used by other Python files.
+- **Monorepo**: A software development strategy where many projects are stored in the same repository.
+
+## N
+
+- **Namespace Package**: A package split across multiple directories or distribution packages.
+
+## P
+
+- **Package**: A directory of Python modules containing an additional `__init__.py` file.
+- **PEP (Python Enhancement Proposal)**: A design document providing information to the Python community, often proposing new features.
+- **PEP 8**: The style guide for Python code.
+- **PyPI (Python Package Index)**: The official repository for third-party Python software.
+
+## R
+
+- **Refactoring**: Restructuring existing code without changing its external behavior.
+- **Repository**: A storage location for software packages and version control.
+- **Requirements File**: A file listing the dependencies required for a Python project.
+- **Reproducible Build**: A build that can be recreated exactly regardless of when or where it's built.
+
+## S
+
+- **Semantic Versioning**: A versioning scheme in the format MAJOR.MINOR.PATCH, where each number increment indicates the type of change.
+- **Static Analysis**: Analyzing code without executing it to find potential issues.
+- **Static Typing**: Specifying variable types at compile time instead of runtime.
+- **Stub Files**: Files that contain type annotations for modules that don't have native typing support.
+
+## T
+
+- **Test-Driven Development (TDD)**: A development process where tests are written before the code.
+- **Type Annotation**: Syntax for indicating the expected type of variables, function parameters, and return values.
+- **Type Hinting**: Adding type annotations to Python code to help with static analysis and IDE assistance.
+
+## U
+
+- **Unit Testing**: Testing individual components in isolation from the rest of the system.
+
+## V
+
+- **Virtual Environment**: An isolated Python environment that allows packages to be installed for use by a particular project, without affecting other projects.
+
+## W
+
+- **Wheel**: A built-package format for Python that can be installed more quickly than source distributions.

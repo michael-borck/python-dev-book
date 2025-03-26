@@ -1,0 +1,329 @@
+
+# Part 1: Setting the Foundation
+
+## Python Project Structure Best Practices
+
+A well-organized project structure is the cornerstone of maintainable Python code. Even before writing a single line of code, decisions about how to organize your files will impact how easily you can test, document, and expand your project.
+
+The structure we recommend follows modern Python conventions, prioritizing clarity and separation of concerns:
+
+```
+my_project/
+├── src/                    # Main source code directory
+│   └── my_package/         # Your actual Python package
+│       ├── __init__.py     # Makes the directory a package
+│       ├── main.py         # Core functionality
+│       └── helpers.py      # Supporting functions/classes
+├── tests/                  # Test suite
+│   ├── __init__.py
+│   ├── test_main.py        # Tests for main.py
+│   └── test_helpers.py     # Tests for helpers.py
+├── docs/                   # Documentation (can start simple)
+│   └── index.md            # Main documentation page
+├── .gitignore              # Files to exclude from Git
+├── README.md               # Project overview and quick start
+├── requirements.in         # Direct dependencies (human-maintained)
+├── requirements.txt        # Locked dependencies (generated)
+└── pyproject.toml          # Tool configuration
+```
+
+### Why Use the `src` Layout?
+
+The `src` layout (placing your package inside a `src` directory rather than at the project root) provides several advantages:
+
+1. **Enforces proper installation**: When developing, you must install your package to use it, ensuring you're testing the same way users will experience it.
+2. **Prevents accidental imports**: You can't accidentally import from your project without installing it, avoiding confusing behaviors.
+3. **Clarifies package boundaries**: Makes it explicit which code is part of your distributable package.
+
+While simpler projects might skip this layout, adopting it early builds good habits and makes future growth easier.
+
+### Key Components Explained
+
+- **src/my_package/**: Contains your actual Python code. The package name should be unique and descriptive.
+- **tests/**: Keeps tests separate from implementation but adjacent in the repository.
+- **docs/**: Houses documentation, starting simple and growing as needed.
+- **.gitignore**: Tells Git which files to ignore (like virtual environments, cache files, etc.).
+- **README.md**: The first document anyone will see—provide clear instructions on installation and basic usage.
+- **requirements.in/requirements.txt**: Manages dependencies (we'll explain this approach in Part 2).
+- **pyproject.toml**: Configuration for development tools like Ruff and mypy, following modern standards.
+
+### Getting Started
+
+Creating this structure is straightforward. Here's how to initialize a basic project:
+
+```bash
+# Create the project directory
+mkdir my_project && cd my_project
+
+# Create the basic structure
+mkdir -p src/my_package tests docs
+
+# Initialize the Python package
+touch src/my_package/__init__.py
+touch src/my_package/main.py
+
+# Create initial test files
+touch tests/__init__.py
+touch tests/test_main.py
+
+# Create essential files
+echo "# My Project\nA short description of my project." > README.md
+touch requirements.in
+touch pyproject.toml
+
+# Initialize Git repository
+git init
+```
+
+This structure promotes maintainability and follows Python's conventions. It might seem like overkill for tiny scripts, but as your project grows, you'll appreciate having this organization from the start.
+
+In the next section, we'll build on this foundation by implementing version control best practices.
+
+## Version Control Fundamentals
+
+Version control is an essential part of modern software development, and Git has become the de facto standard. Even for small solo projects, proper version control offers invaluable benefits for tracking changes, experimenting safely, and maintaining a clear history of your work.
+
+### Setting Up Git
+
+If you haven't set up Git yet, here's how to get started:
+
+```bash
+# Configure your identity (use your actual name and email)
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# Initialize Git in your project (if not done already)
+git init
+
+# Create a .gitignore file to exclude unnecessary files
+```
+
+A good `.gitignore` file is essential for Python projects. Here's a simplified version to start with:
+
+```
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Local development settings
+.env
+.vscode/
+.idea/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Generated documentation
+site/
+```
+
+### Basic Git Workflow
+
+For beginners, a simple Git workflow is sufficient:
+
+1. **Make changes** to your code
+2. **Stage changes** you want to commit
+3. **Commit** with a meaningful message
+4. **Push** to a remote repository (like GitHub)
+
+Here's what this looks like in practice:
+
+```bash
+# Check what files you've changed
+git status
+
+# Stage specific files (or use git add . for all changes)
+git add src/my_package/main.py tests/test_main.py
+
+# Commit changes with a descriptive message
+git commit -m "Add user authentication function and tests"
+
+# Push to a remote repository (if using GitHub or similar)
+git push origin main
+```
+
+### Effective Commit Messages
+
+Good commit messages are vital for understanding project history. Follow these simple guidelines:
+
+1. Use the imperative mood ("Add feature" not "Added feature")
+2. Keep the first line under 50 characters as a summary
+3. When needed, add more details after a blank line
+4. Explain *why* a change was made, not just *what* changed
+
+Example of a good commit message:
+```
+Add password validation function
+
+- Implements minimum length of 8 characters
+- Requires at least one special character
+- Fixes #42 (weak password vulnerability)
+```
+
+### Branching for Features and Fixes
+
+As your project grows, a branching workflow helps manage different streams of work:
+
+```bash
+# Create a new branch for a feature
+git checkout -b feature/user-profiles
+
+# Make changes, commit, and push to the branch
+git add .
+git commit -m "Add user profile page"
+git push origin feature/user-profiles
+
+# When ready, merge back to main (after review)
+git checkout main
+git merge feature/user-profiles
+```
+
+For team projects, consider using pull/merge requests on platforms like GitHub or GitLab rather than direct merges to the main branch. This enables code review and discussion before changes are incorporated.
+
+### Integrating with GitHub or GitLab
+
+Hosting your repository on GitHub, GitLab, or similar services provides:
+
+1. A backup of your code
+2. Collaboration tools (issues, pull requests)
+3. Integration with CI/CD services
+4. Visibility for your project
+
+To connect your local repository to GitHub:
+
+```bash
+# After creating a repository on GitHub
+git remote add origin https://github.com/yourusername/my_project.git
+git branch -M main
+git push -u origin main
+```
+
+### Git Best Practices for Beginners
+
+1. **Commit frequently**: Small, focused commits are easier to understand and review
+2. **Never commit sensitive data**: Passwords, API keys, etc. should never enter your repository
+3. **Pull before pushing**: Always integrate others' changes before pushing your own
+4. **Use meaningful branch names**: Names like `feature/user-login` or `fix/validation-bug` explain the purpose
+
+Version control may seem like an overhead for very small projects, but establishing these habits early will pay dividends as your projects grow in size and complexity. It's much easier to start with good practices than to retrofit them later.
+
+In the next section, we'll set up a virtual environment and explore basic dependency management to isolate your project and manage its requirements.
+
+## Virtual Environments and Basic Dependencies
+
+Python's flexibility with packages and imports is powerful, but can quickly lead to conflicts between projects. Virtual environments solve this problem by creating isolated spaces for each project's dependencies.
+
+### Understanding Virtual Environments
+
+A virtual environment is an isolated copy of Python with its own packages, separate from your system Python installation. This isolation ensures:
+
+* Different projects can use different versions of the same package
+* Installing a package for one project won't affect others
+* Your development environment closely matches production
+
+### Setting Up a Virtual Environment with `venv`
+
+Python comes with `venv` built in, making it the simplest way to create virtual environments:
+
+```bash
+# Create a virtual environment named ".venv" in your project
+python -m venv .venv
+
+# Activate the environment (the command differs by platform)
+# On Windows:
+.venv\Scripts\activate
+# On macOS/Linux:
+source .venv/bin/activate
+
+# Your prompt should change to indicate the active environment
+(venv) $
+```
+
+Once activated, any packages you install will be confined to this environment. When you're done working on the project, you can deactivate the environment:
+
+```bash
+deactivate
+```
+
+> **Tip**: Using `.venv` as the environment name (with the leading dot) makes it hidden in many file browsers, reducing clutter. Make sure `.venv/` is in your `.gitignore` file - you never want to commit this directory.
+
+### Basic Dependency Management
+
+With your virtual environment active, you can install packages using pip:
+
+```bash
+# Install a specific package
+pip install requests
+
+# Install multiple packages
+pip install pytest black
+```
+
+When working on a team project or deploying to production, you'll need to track and share these dependencies. The simplest approach uses `pip freeze`:
+
+```bash
+# Capture all installed packages and their versions
+pip freeze > requirements.txt
+
+# On another machine, install the exact same packages
+pip install -r requirements.txt
+```
+
+This approach works well for simple projects, especially when you're just getting started. However, as we'll see in Part 2, there are limitations to this method:
+
+* It captures indirect dependencies (dependencies of your dependencies) which can make the file harder to maintain
+* It doesn't distinguish between your project's requirements and development tools
+* It can sometimes be too strict, pinning packages to versions that might not be necessary
+
+> **Looking Ahead**: In Part 2, we'll explore more robust dependency management with tools like pip-tools and uv, which solve these limitations by creating proper "lock files" while maintaining a clean list of direct dependencies. We'll also see how these tools help ensure deterministic builds - a crucial feature as your projects grow in complexity.
+
+### Practical Example: Setting Up a New Project
+
+Let's combine what we've learned so far with a practical example. Here's how to set up a new project with good practices:
+
+```bash
+# Create project structure
+mkdir -p my_project/src/my_package my_project/tests
+cd my_project
+
+# Initialize Git repository
+git init
+echo "*.pyc\n__pycache__/\n.venv/\n*.egg-info/" > .gitignore
+
+# Create basic files
+echo "# My Project\n\nA description of my project." > README.md
+touch src/my_package/__init__.py
+touch src/my_package/main.py
+touch tests/__init__.py
+touch tests/test_main.py
+touch requirements.in
+
+# Create and activate virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install initial dependencies
+pip install pytest
+pip freeze > requirements.txt
+
+# Initial Git commit
+git add .
+git commit -m "Initial project setup"
+```
+
+This gives you a solid foundation to start developing your Python project using best practices from the beginning. As your project grows, the structure easily accommodates more complex needs without major reorganization.
+
+With our project structure in place, version control set up, and a virtual environment ready, we have all the foundations for effective Python development. In Part 2, we'll build on this foundation by introducing more robust tools for dependency management, code quality, testing, and type checking.

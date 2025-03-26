@@ -1,0 +1,89 @@
+# Appendix A: Python Development Workflow Checklist
+
+This checklist provides a practical reference for setting up and maintaining Python projects of different scales. Choose the practices that match your project's complexity and team size.
+
+| Development Stage | Simple/Beginner Project | Intermediate/Large Project |
+|-------------------|-------------------------|----------------------------|
+| **Project Setup** | | |
+| Create project structure | ✅ Basic directory with code and tests | ✅ Full `src` layout with package under `src/` |
+| Initialize version control | ✅ `git init` and basic `.gitignore` | ✅ Advanced `.gitignore` with branch strategies |
+| Add essential files | ✅ README.md | ✅ README.md, LICENSE, CONTRIBUTING.md |
+| | | |
+| **Environment Setup** | | |
+| Create virtual environment | ✅ `python -m venv .venv` | ✅ `uv venv` or containerized environment |
+| Track dependencies | ✅ `pip freeze > requirements.txt` | ✅ `requirements.in` with `pip-compile` or `uv pip compile` |
+| Install dependencies | ✅ `pip install -r requirements.txt` | ✅ `pip-sync` or `uv pip sync` |
+| | | |
+| **Code Quality** | | |
+| Formatting | ✅ Basic PEP 8 adherence | ✅ Automated with Ruff (`ruff format`) |
+| Linting | ❌ or basic Flake8 | ✅ Ruff with multiple rule sets enabled |
+| Type checking | ❌ or basic annotations | ✅ mypy with increasing strictness |
+| Security scanning | ❌ | ✅ Bandit |
+| Dead code detection | ❌ | ✅ Vulture |
+| | | |
+| **Testing** | | |
+| Unit tests | ✅ Basic pytest | ✅ Comprehensive pytest with fixtures |
+| Test coverage | ❌ or basic | ✅ pytest-cov with coverage targets |
+| Mocking | ❌ | ✅ pytest-mock for external dependencies |
+| Integration tests | ❌ | ✅ For component interactions |
+| Functional tests | ❌ | ✅ For key user workflows |
+| | | |
+| **Documentation** | | |
+| Code documentation | ✅ Basic docstrings | ✅ Comprehensive docstrings (Google/NumPy style) |
+| API documentation | ✅ Generated with pydoc | ✅ MkDocs + mkdocstrings |
+| User guides | ✅ Basic README usage examples | ✅ Comprehensive MkDocs site with tutorials |
+| | | |
+| **Version Control Practices** | | |
+| Commit frequency | ✅ Regular commits | ✅ Atomic, focused commits |
+| Commit messages | ✅ Basic descriptive messages | ✅ Structured commit messages with context |
+| Branching | ❌ or basic feature branches | ✅ Git-flow or trunk-based with feature branches |
+| Code reviews | ❌ | ✅ Pull/Merge requests with review guidelines |
+| | | |
+| **Automation** | | |
+| Local automation | ❌ | ✅ pre-commit hooks |
+| CI pipeline | ❌ or basic | ✅ GitHub Actions with matrix testing |
+| CD pipeline | ❌ | ✅ Automated deployments/releases |
+| | | |
+| **Packaging & Distribution** | | |
+| Package configuration | ✅ Basic `pyproject.toml` | ✅ Comprehensive configuration with extras |
+| Build system | ✅ Basic setuptools | ✅ Modern build with PEP 517 support |
+| Release process | ✅ Manual versioning | ✅ Semantic versioning with automation |
+| Publication | ❌ or manual PyPI upload | ✅ Automated PyPI deployment via CI |
+| | | |
+| **Maintenance** | | |
+| Dependency updates | ✅ Manual updates | ✅ Scheduled updates with dependabot |
+| Security monitoring | ❌ | ✅ Vulnerability scanning |
+| Performance profiling | ❌ | ✅ Regular profiling and benchmarking |
+| User feedback channels | ❌ | ✅ Issue templates and contribution guidelines |
+
+## Project Progression Path
+
+For projects that start simple but grow in complexity, follow this progression:
+
+1. **Start with the essentials**:
+   - Project structure and version control
+   - Virtual environment
+   - Basic testing
+   - Clear README
+
+2. **Add code quality tools incrementally**:
+   - First add Ruff for formatting and basic linting
+   - Then add mypy for critical modules
+   - Finally add security scanning
+
+3. **Enhance testing as complexity increases**:
+   - Add coverage reporting
+   - Implement mocking for external dependencies
+   - Add integration tests for component interactions
+
+4. **Improve documentation with growth**:
+   - Start with good docstrings from day one
+   - Transition to MkDocs when README becomes insufficient
+   - Generate API documentation from docstrings
+
+5. **Automate processes as repetition increases**:
+   - Add pre-commit hooks for local checks
+   - Implement CI for testing across environments
+   - Add CD when deployment becomes routine
+
+Remember: Don't overengineer! Choose the practices that add value to your specific project and team. It's better to implement a few practices well than to poorly implement many.

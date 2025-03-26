@@ -1,0 +1,1232 @@
+
+# Part 2: Advancing Your Workflow
+
+## Robust Dependency Management with pip-tools and uv
+
+As your projects grow in complexity or involve more developers, the basic `pip freeze > requirements.txt` approach starts to show limitations. You need a dependency management system that gives you more control and ensures truly reproducible environments.
+
+### The Problem with `pip freeze`
+
+While `pip freeze` is convenient, it has several drawbacks:
+
+1. **No distinction between direct and indirect dependencies**: You can't easily tell which packages you explicitly need versus those that were installed as dependencies of other packages.
+
+2. **Maintenance challenges**: When you want to update a package, you may need to regenerate the entire requirements file, potentially changing packages you didn't intend to update.
+
+3. **No environment synchronization**: Installing from a requirements.txt file adds packages but doesn't remove packages that are no longer needed.
+
+4. **No explicit dependency specification**: You can't easily specify version ranges (e.g., "I need any Django 4.x version") or extras.
+
+Let's explore two powerful solutions: `pip-tools` and `uv`.
+
+### Solution 1: pip-tools
+
+pip-tools introduces a two-file approach to dependency management:
+
+1. `requirements.in`: A manually maintained list of your direct dependencies, potentially with version constraints.
+2. `requirements.txt`: A generated lock file containing exact versions of all dependencies (direct and indirect).
+
+#### Getting Started with pip-tools
+
+```bash
+# Install pip-tools in your virtual environment
+pip install pip-tools
+
+# Create a requirements.in file with your direct dependencies
+cat > requirements.in << EOF
+requests>=2.25.0  # Use any version 2.25.0 or newer
+flask==2.0.1      # Use exactly this version
+pandas            # Use any version
+EOF
+
+# Compile the lock file
+pip-compile requirements.in
+
+# Install the exact dependencies
+pip-sync requirements.txt
+```
+
+The generated `requirements.txt` will contain exact versions of your specified packages plus all their dependencies, including hashes for security.
+
+#### Managing Development Dependencies
+
+For a cleaner setup, you can separate production and development dependencies:
+
+```bash
+# Create requirements-dev.in
+cat > requirements-dev.in << EOF
+-c requirements.txt  # Constraint: use same versions as in requirements.txt
+pytest>=7.0.0
+pytest-cov
+ruff
+mypy
+EOF
+
+# Compile development dependencies
+pip-compile requirements-dev.in -o requirements-dev.txt
+
+# Install all dependencies (both prod and dev)
+pip-sync requirements.txt requirements-dev.txt
+```
+
+#### Updating Dependencies
+
+When you need to update packages:
+
+```bash
+# Update all packages to their latest allowed versions
+pip-compile --upgrade requirements.in
+
+# Update a specific package
+pip-compile --upgrade-package requests requirements.in
+
+# After updating, sync your environment
+pip-sync requirements.txt
+```
+
+### Solution 2: uv
+
+`uv` is a newer, Rust-based tool that provides significant speed improvements while maintaining compatibility with existing Python packaging standards. It combines environment management, package installation, and dependency resolution in one tool.
+
+#### Getting Started with uv
+
+```bash
+# Install uv (globally with pipx or in your current environment)
+pipx install uv
+# Or: pip install uv
+
+# Create a virtual environment (if needed)
+uv venv
+
+# Activate the environment as usual
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Create the same requirements.in file as above
+cat > requirements.in << EOF
+requests>=2.25.0
+flask==2.0.1
+pandas
+EOF
+
+# Compile the lock file
+uv pip compile requirements.in -o requirements.txt
+
+# Install dependencies
+uv pip sync requirements.txt
+```
+
+#### Key Advantages of uv
+
+1. **Speed**: uv is significantly faster than standard pip and pip-tools, especially for large dependency trees.
+
+2. **Global caching**: uv implements efficient caching, reducing redundant downloads across projects.
+
+3. **Consolidated tooling**: Acts as a replacement for multiple tools (pip, pip-tools, virtualenv) with a consistent interface.
+
+4. **Enhanced dependency resolution**: Often provides clearer error messages for dependency conflicts.
+
+#### Managing Dependencies with uv
+
+uv supports the same workflow as pip-tools but with different commands:
+
+```bash
+# For development dependencies
+cat > requirements-dev.in << EOF
+-c requirements.txt
+pytest>=7.0.0
+pytest-cov
+ruff
+mypy
+EOF
+
+# Compile dev dependencies
+uv pip compile requirements-dev.in -o requirements-dev.txt
+
+# Install all dependencies
+uv pip sync requirements.txt requirements-dev.txt
+
+# Update a specific package
+uv pip compile --upgrade-package requests requirements.in
+```
+
+### Choosing Between pip-tools and uv
+
+Both tools solve the core problem of creating reproducible environments, but with different tradeoffs:
+
+| Factor | pip-tools | uv |
+|--------|-----------|---|
+| Speed | Good | Excellent (often 10x+ faster) |
+| Installation | Simple Python package | External tool (but simple to install) |
+| Maturity | Well-established | Newer but rapidly maturing |
+| Functionality | Focused on dependency locking | Broader tool combining multiple functions |
+| Learning curve | Minimal | Minimal (designed for compatibility) |
+
+For beginners or smaller projects, pip-tools offers a gentle introduction to proper dependency management with minimal new concepts. For larger projects or when speed becomes important, uv provides significant benefits with a similar workflow.
+
+### Best Practices for Either Approach
+
+Regardless of which tool you choose:
+
+1. **Commit both `.in` and `.txt` files** to version control. The `.in` files represent your intent, while the `.txt` files ensure reproducibility.
+
+2. **Use constraints carefully**. Start with loose constraints (just package names) and add version constraints only when needed.
+
+3. **Regularly update dependencies** to get security fixes, using `--upgrade` or `--upgrade-package`.
+
+4. **Always use `pip-sync` or `uv pip sync`** instead of `pip install -r requirements.txt` to ensure your environment exactly matches the lock file.
+
+In the next section, we'll explore how to maintain code quality through automated formatting and linting with Ruff, taking your workflow to the next professional level.
+
+## Code Quality Tools with Ruff
+
+Writing code that works is only part of the development process. Code should also be readable, maintainable, and free from common errors. This is where code quality tools come in, helping you enforce consistent style and catch potential issues early.
+
+### The Evolution of Python Code Quality Tools
+
+Traditionally, Python developers used multiple specialized tools:
+
+- **Black** for code formatting
+- **isort** for import sorting
+- **Flake8** for linting (style checks)
+- **Pylint** for deeper static analysis
+
+While effective, maintaining configuration for all these tools was cumbersome. Enter Ruff – a modern, Rust-based tool that combines formatting and linting in one incredibly fast package.
+
+### Why Ruff?
+
+Ruff offers several compelling advantages:
+
+1. **Speed**: Often 10-100x faster than traditional Python linters
+2. **Consolidation**: Replaces multiple tools with one consistent interface
+3. **Compatibility**: Implements rules from established tools (Flake8, Black, isort, etc.)
+4. **Configuration**: Single configuration in your pyproject.toml file
+5. **Automatic fixing**: Can automatically fix many issues it identifies
+
+### Getting Started with Ruff
+
+First, install Ruff in your virtual environment:
+
+```bash
+# If using pip
+pip install ruff
+
+# If using uv
+uv pip install ruff
+```
+
+### Basic Configuration
+
+Configure Ruff in your `pyproject.toml` file:
+
+```toml
+[tool.ruff]
+# Enable pycodestyle, Pyflakes, isort, and more
+select = ["E", "F", "I"]
+ignore = []
+
+# Allow lines to be as long as 100 characters
+line-length = 100
+
+# Assume Python 3.10
+target-version = "py310"
+
+[tool.ruff.format]
+# Formats code similar to Black (this is the default)
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+```
+
+This configuration enables:
+- `E` rules from pycodestyle (PEP 8 style guide)
+- `F` rules from Pyflakes (logical and syntax error detection)
+- `I` rules for import sorting (like isort)
+
+### Using Ruff in Your Workflow
+
+Ruff provides two main commands:
+
+```bash
+# Check code for issues without changing it
+ruff check .
+
+# Format code (similar to Black)
+ruff format .
+```
+
+To automatically fix issues that Ruff can solve:
+
+```bash
+# Fix all auto-fixable issues
+ruff check --fix .
+```
+
+### Real-world Configuration Example
+
+Here's a more comprehensive configuration that balances strictness with practicality:
+
+```toml
+[tool.ruff]
+# Target Python version
+target-version = "py39"
+# Line length
+line-length = 88
+
+# Enable a comprehensive set of rules
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "W",   # pycodestyle warnings
+    "C90", # mccabe complexity
+    "N",   # pep8-naming
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "D",   # pydocstyle
+]
+
+# Ignore specific rules
+ignore = [
+    "E203",  # Whitespace before ':' (handled by formatter)
+    "D100",  # Missing docstring in public module
+    "D104",  # Missing docstring in public package
+]
+
+# Exclude certain files/directories from checking
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.pydocstyle]
+# Use Google-style docstrings
+convention = "google"
+
+[tool.ruff.mccabe]
+# Maximum McCabe complexity allowed
+max-complexity = 10
+
+[tool.ruff.format]
+# Formatting options (black-compatible by default)
+quote-style = "double"
+```
+
+### Integrating Ruff into Your Editor
+
+Ruff provides editor integrations for:
+
+- VS Code (via the Ruff extension)
+- PyCharm (via third-party plugin)
+- Vim/Neovim
+- Emacs
+
+For example, in VS Code, install the Ruff extension and add to your settings.json:
+
+```json
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.ruff": true,
+        "source.organizeImports.ruff": true
+    }
+}
+```
+
+This configuration automatically formats code and fixes issues whenever you save a file.
+
+### Gradually Adopting Ruff
+
+If you're working with an existing codebase, you can adopt Ruff gradually:
+
+1. **Start with formatting only**: Begin with `ruff format` to establish consistent formatting
+2. **Add basic linting**: Enable a few rule sets like `E`, `F`, and `I`
+3. **Gradually increase strictness**: Add more rule sets as your team adjusts
+4. **Use per-file ignores**: For specific issues in specific files
+
+```toml
+[tool.ruff.per-file-ignores]
+"tests/*" = ["D103"]  # Ignore missing docstrings in tests
+"__init__.py" = ["F401"]  # Ignore unused imports in __init__.py
+```
+
+### Enforcing Code Quality in CI
+
+Add Ruff to your CI pipeline to ensure code quality standards are maintained:
+
+```yaml
+# In your GitHub Actions workflow (.github/workflows/ci.yml)
+- name: Check formatting with Ruff
+  run: ruff format --check .
+  
+- name: Lint with Ruff
+  run: ruff check .
+```
+
+The `--check` flag on `ruff format` makes it exit with an error if files would be reformatted, instead of actually changing them.
+
+### Beyond Ruff: When to Consider Other Tools
+
+While Ruff covers a wide range of code quality checks, some specific needs might require additional tools:
+
+- **mypy** for static type checking (covered in a later section)
+- **bandit** for security-focused checks
+- **vulture** for finding dead code
+
+However, Ruff's rule set continues to expand, potentially reducing the need for these additional tools over time.
+
+By incorporating Ruff into your workflow, you'll catch many common errors before they reach production and maintain a consistent, readable codebase. In the next section, we'll explore how to ensure your code works as expected through automated testing with pytest.
+
+## Automated Testing with pytest
+
+Testing is a crucial aspect of software development that ensures your code works as intended and continues to work as you make changes. Python's testing ecosystem offers numerous frameworks, but pytest has emerged as the most popular and powerful choice for most projects.
+
+### Why Testing Matters
+
+Automated tests provide several key benefits:
+
+1. **Verification**: Confirm that your code works as expected
+2. **Regression prevention**: Catch when changes break existing functionality
+3. **Documentation**: Tests demonstrate how code is meant to be used
+4. **Refactoring confidence**: Change code structure while ensuring behavior remains correct
+5. **Design feedback**: Difficult-to-test code often indicates design problems
+
+### Getting Started with pytest
+
+First, install pytest in your virtual environment:
+
+```bash
+# Standard installation
+pip install pytest
+
+# With coverage reporting
+pip install pytest pytest-cov
+```
+
+### Writing Your First Test
+
+Let's assume you have a simple function in `src/my_package/calculations.py`:
+
+```python
+def add(a, b):
+    """Add two numbers and return the result."""
+    return a + b
+```
+
+Create a test file in `tests/test_calculations.py`:
+
+```python
+from my_package.calculations import add
+
+def test_add():
+    # Test basic addition
+    assert add(1, 2) == 3
+    
+    # Test with negative numbers
+    assert add(-1, 1) == 0
+    assert add(-1, -1) == -2
+    
+    # Test with floating point
+    assert add(1.5, 2.5) == 4.0
+```
+
+### Running Tests
+
+Run all tests from your project root:
+
+```bash
+# Run all tests
+pytest
+
+# Run with more detail
+pytest -v
+
+# Run a specific test file
+pytest tests/test_calculations.py
+
+# Run a specific test function
+pytest tests/test_calculations.py::test_add
+```
+
+### pytest Features That Make Testing Easier
+
+pytest has several features that make it superior to Python's built-in unittest framework:
+
+#### 1. Simple Assertions
+
+Instead of methods like `assertEqual` or `assertTrue`, pytest lets you use Python's built-in `assert` statement, making tests more readable.
+
+```python
+# With pytest
+assert result == expected
+
+# Instead of unittest's
+self.assertEqual(result, expected)
+```
+
+#### 2. Fixtures
+
+Fixtures are a powerful way to set up preconditions for your tests:
+
+```python
+import pytest
+from my_package.database import Database
+
+@pytest.fixture
+def db():
+    """Provide a clean database instance for tests."""
+    db = Database(":memory:")  # Use in-memory SQLite
+    db.create_tables()
+    yield db
+    db.close()  # Cleanup happens after the test
+
+def test_save_record(db):
+    # The db fixture is automatically provided
+    record = {"id": 1, "name": "Test"}
+    db.save(record)
+    assert db.get(1) == record
+```
+
+#### 3. Parameterized Tests
+
+Test multiple inputs without repetitive code:
+
+```python
+import pytest
+from my_package.calculations import add
+
+@pytest.mark.parametrize("a, b, expected", [
+    (1, 2, 3),
+    (-1, 1, 0),
+    (0, 0, 0),
+    (1.5, 2.5, 4.0),
+])
+def test_add_parametrized(a, b, expected):
+    assert add(a, b) == expected
+```
+
+#### 4. Marks for Test Organization
+
+Organize tests with marks:
+
+```python
+@pytest.mark.slow
+def test_complex_calculation():
+    # This test takes a long time
+    ...
+
+# Run only tests marked as 'slow'
+# pytest -m slow
+
+@pytest.mark.skip(reason="Feature not implemented yet")
+def test_future_feature():
+    ...
+
+@pytest.mark.xfail(reason="Known bug #123")
+def test_buggy_function():
+    ...
+```
+
+### Test Coverage
+
+Track which parts of your code are tested using pytest-cov:
+
+```bash
+# Run tests with coverage report
+pytest --cov=src/my_package
+
+# Generate HTML report for detailed analysis
+pytest --cov=src/my_package --cov-report=html
+# Then open htmlcov/index.html in your browser
+```
+
+A coverage report helps identify untested code:
+
+```
+----------- coverage: platform linux, python 3.9.5-final-0 -----------
+Name                             Stmts   Miss  Cover
+----------------------------------------------------
+src/my_package/__init__.py           1      0   100%
+src/my_package/calculations.py      10      2    80%
+src/my_package/models.py            45     15    67%
+----------------------------------------------------
+TOTAL                               56     17    70%
+```
+
+### Testing Best Practices
+
+1. **Write tests as you develop**: Don't wait until the end
+2. **Name tests clearly**: Include the function name and scenario being tested
+3. **One assertion per test**: Focus each test on a single behavior
+4. **Test edge cases**: Empty input, boundary values, error conditions
+5. **Avoid test interdependence**: Tests should work independently
+6. **Mock external dependencies**: APIs, databases, file systems
+7. **Keep tests fast**: Slow tests get run less often
+
+### Common Testing Patterns
+
+#### Testing Exceptions
+
+Verify that your code raises the right exceptions:
+
+```python
+import pytest
+from my_package.validate import validate_username
+
+def test_validate_username_too_short():
+    with pytest.raises(ValueError) as excinfo:
+        validate_username("ab")  # Too short
+    assert "Username must be at least 3 characters" in str(excinfo.value)
+```
+
+#### Testing with Temporary Files
+
+Test file operations safely:
+
+```python
+def test_save_to_file(tmp_path):
+    # tmp_path is a built-in pytest fixture
+    file_path = tmp_path / "test.txt"
+    
+    # Test file writing
+    save_to_file(file_path, "test content")
+    
+    # Verify content
+    assert file_path.read_text() == "test content"
+```
+
+#### Mocking
+
+Isolate your code from external dependencies using the pytest-mock plugin:
+
+```python
+def test_fetch_user_data(mocker):
+    # Mock the API call
+    mock_response = mocker.patch('requests.get')
+    mock_response.return_value.json.return_value = {"id": 1, "name": "Test User"}
+    
+    # Test our function
+    from my_package.api import get_user
+    user = get_user(1)
+    
+    # Verify results
+    assert user['name'] == "Test User"
+    mock_response.assert_called_once_with('https://api.example.com/users/1')
+```
+
+### Testing Strategy
+
+As your project grows, organize tests into different categories:
+
+1. **Unit tests**: Test individual functions/classes in isolation
+2. **Integration tests**: Test interactions between components
+3. **Functional tests**: Test entire features from a user perspective
+
+Most projects should have a pyramid shape: many unit tests, fewer integration tests, and even fewer functional tests.
+
+### Continuous Testing
+
+Make testing a habitual part of your workflow:
+
+1. **Run relevant tests as you code**: Many editors integrate with pytest
+2. **Run full test suite before committing**: Use pre-commit hooks
+3. **Run tests in CI**: Catch issues that might only appear in different environments
+
+By incorporating comprehensive testing into your development process, you'll catch bugs earlier, ship with more confidence, and build a more maintainable codebase.
+
+In the next section, we'll explore static type checking with mypy, which can help catch a whole new category of errors before your code even runs.
+
+## Type Checking with mypy
+
+Python is dynamically typed, which provides flexibility but can also lead to type-related errors that only appear at runtime. Static type checking with mypy adds an extra layer of verification, catching many potential issues before your code executes.
+
+### Understanding Type Hints
+
+Python 3.5+ supports type hints, which are annotations indicating what types of values functions expect and return:
+
+```python
+def greeting(name: str) -> str:
+    return f"Hello, {name}!"
+```
+
+These annotations don't change how Python runs—they're ignored by the interpreter at runtime. However, tools like mypy can analyze them statically to catch potential type errors.
+
+### Getting Started with mypy
+
+First, install mypy in your development environment:
+
+```bash
+pip install mypy
+```
+
+Let's check a simple example:
+
+```python
+# example.py
+def double(x: int) -> int:
+    return x * 2
+
+# This is fine
+result = double(5)
+
+# This would fail at runtime
+double("hello")
+```
+
+Run mypy to check:
+
+```bash
+mypy example.py
+```
+
+Output:
+```
+example.py:8: error: Argument 1 to "double" has incompatible type "str"; expected "int"
+```
+
+mypy caught the type mismatch without running the code!
+
+### Configuring mypy
+
+Configure mypy in your `pyproject.toml` file for a consistent experience:
+
+```toml
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+```
+
+Start with a lenient configuration and gradually increase strictness:
+
+```toml
+# Starting configuration: permissive but helpful
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+check_untyped_defs = true
+disallow_untyped_defs = false
+
+# Intermediate configuration: more rigorous
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+# Strict configuration: full typing required
+[tool.mypy]
+python_version = "3.9"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true
+```
+
+### Gradual Typing
+
+One major advantage of Python's type system is gradual typing—you can add types incrementally:
+
+1. Start with critical or error-prone modules
+2. Add types to public interfaces first
+3. Increase type coverage over time
+
+### Essential Type Annotations
+
+#### Basic Types
+
+```python
+# Variables
+name: str = "Alice"
+age: int = 30
+height: float = 1.75
+is_active: bool = True
+
+# Lists, sets, and dictionaries
+names: list[str] = ["Alice", "Bob"]
+unique_ids: set[int] = {1, 2, 3}
+user_scores: dict[str, int] = {"Alice": 100, "Bob": 85}
+```
+
+#### Function Annotations
+
+```python
+def calculate_total(prices: list[float], tax_rate: float = 0.0) -> float:
+    """Calculate the total price including tax."""
+    subtotal = sum(prices)
+    return subtotal * (1 + tax_rate)
+```
+
+#### Class Annotations
+
+```python
+from typing import Optional
+
+class User:
+    def __init__(self, name: str, email: str, age: Optional[int] = None):
+        self.name: str = name
+        self.email: str = email
+        self.age: Optional[int] = age
+    
+    def is_adult(self) -> bool:
+        """Check if user is an adult."""
+        return self.age is not None and self.age >= 18
+```
+
+### Advanced Type Hints
+
+#### Union Types
+
+Use Union to indicate multiple possible types (use the `|` operator in Python 3.10+):
+
+```python
+from typing import Union
+
+# Python 3.9 and earlier
+def process_input(data: Union[str, list[str]]) -> str:
+    if isinstance(data, list):
+        return ", ".join(data)
+    return data
+
+# Python 3.10+
+def process_input(data: str | list[str]) -> str:
+    if isinstance(data, list):
+        return ", ".join(data)
+    return data
+```
+
+#### Optional and None
+
+`Optional[T]` is equivalent to `Union[T, None]` or `T | None`:
+
+```python
+from typing import Optional
+
+def find_user(user_id: int) -> Optional[dict]:
+    """Return user data or None if not found."""
+    # Implementation...
+```
+
+#### Type Aliases
+
+Create aliases for complex types:
+
+```python
+from typing import Dict, List, Tuple
+
+# Complex type
+TransactionRecord = Tuple[str, float, str, Dict[str, str]]
+
+# More readable with alias
+def process_transactions(transactions: List[TransactionRecord]) -> float:
+    total = 0.0
+    for _, amount, _, _ in transactions:
+        total += amount
+    return total
+```
+
+#### Callable
+
+Type hint for functions:
+
+```python
+from typing import Callable
+
+def apply_function(func: Callable[[int], str], value: int) -> str:
+    """Apply a function that converts int to str."""
+    return func(value)
+```
+
+### Common Challenges and Solutions
+
+#### Working with Third-Party Libraries
+
+Not all libraries provide type hints. For popular packages, you can often find stub files:
+
+```bash
+pip install types-requests
+```
+
+For others, you can silence mypy warnings selectively:
+
+```python
+import untyped_library  # type: ignore
+```
+
+#### Dealing with Dynamic Features
+
+Python's dynamic features can be challenging to type. Use `Any` when necessary:
+
+```python
+from typing import Any, Dict
+
+def parse_config(config: Dict[str, Any]) -> Dict[str, Any]:
+    """Parse configuration with unknown structure."""
+    # Implementation...
+```
+
+### Integration with Your Workflow
+
+#### Running mypy
+
+```bash
+# Check a specific file
+mypy src/my_package/module.py
+
+# Check the entire package
+mypy src/my_package/
+
+# Use multiple processes for faster checking
+mypy -p my_package --python-version 3.9 --multiprocessing
+```
+
+#### Integrating with CI/CD
+
+Add mypy to your continuous integration workflow:
+
+```yaml
+# GitHub Actions example
+- name: Type check with mypy
+  run: mypy src/
+```
+
+#### Editor Integration
+
+Most Python-friendly editors support mypy:
+
+- VS Code: Use the Pylance extension
+- PyCharm: Has built-in type checking
+- vim/neovim: Use ALE or similar plugins
+
+### Benefits of Type Checking
+
+1. **Catch errors early**: Find type-related bugs before running code
+2. **Improved IDE experience**: Better code completion and refactoring
+3. **Self-documenting code**: Types serve as documentation
+4. **Safer refactoring**: Change code with more confidence
+5. **Gradual adoption**: Add types where they provide the most value
+
+### When to Use Type Hints
+
+Type hints are particularly valuable for:
+
+- Functions with complex parameters or return values
+- Public APIs used by others
+- Areas with frequent bugs
+- Critical code paths
+- Large codebases with multiple contributors
+
+Type checking isn't an all-or-nothing proposition. Even partial type coverage can significantly improve code quality and catch common errors. Start small, focus on interfaces, and expand your type coverage as your team becomes comfortable with the system.
+
+## Security Analysis with Bandit
+
+Software security is a critical concern in modern development, yet it's often overlooked until problems arise. Bandit is a tool designed to find common security issues in Python code through static analysis.
+
+### Understanding Security Static Analysis
+
+Unlike functional testing or linting, security-focused static analysis looks specifically for patterns and practices that could lead to security vulnerabilities:
+
+- Injection vulnerabilities
+- Use of insecure functions
+- Hardcoded credentials
+- Insecure cryptography
+- And many other security issues
+
+### Getting Started with Bandit
+
+First, install Bandit in your virtual environment:
+
+```bash
+pip install bandit
+```
+
+Run a basic scan:
+
+```bash
+# Scan a specific file
+bandit -r src/my_package/main.py
+
+# Scan your entire codebase
+bandit -r src/
+```
+
+### Security Issues Bandit Can Detect
+
+Bandit identifies a wide range of security concerns, including:
+
+#### 1. Hardcoded Secrets
+
+```python
+# Bandit will flag this
+def connect_to_database():
+    password = "super_secret_password"  # Hardcoded secret
+    return Database("user", password)
+```
+
+#### 2. SQL Injection
+
+```python
+# Vulnerable to SQL injection
+def get_user(username):
+    query = f"SELECT * FROM users WHERE username = '{username}'"
+    return db.execute(query)
+
+# Safer approach
+def get_user_safe(username):
+    query = "SELECT * FROM users WHERE username = %s"
+    return db.execute(query, (username,))
+```
+
+#### 3. Shell Injection
+
+```python
+# Vulnerable to command injection
+def run_command(user_input):
+    return os.system(f"ls {user_input}")  # User could inject commands
+
+# Safer approach
+import subprocess
+def run_command_safe(user_input):
+    return subprocess.run(["ls", user_input], capture_output=True, text=True)
+```
+
+#### 4. Insecure Cryptography
+
+```python
+# Using weak hash algorithms
+import hashlib
+def hash_password(password):
+    return hashlib.md5(password.encode()).hexdigest()  # MD5 is insecure
+```
+
+#### 5. Unsafe Deserialization
+
+```python
+# Insecure deserialization
+import pickle
+def load_user_preferences(data):
+    return pickle.loads(data)  # Pickle can execute arbitrary code
+```
+
+### Configuring Bandit
+
+You can configure Bandit using a `.bandit` file or your `pyproject.toml`:
+
+```toml
+[tool.bandit]
+exclude_dirs = ["tests", "docs"]
+skips = ["B311"]  # Skip random warning
+targets = ["src"]
+```
+
+The most critical findings are categorized with high severity and confidence levels:
+
+```bash
+# Only report high-severity issues
+bandit -r src/ -iii -ll
+```
+
+### Integrating Bandit in Your Workflow
+
+#### Add Bandit to CI/CD
+
+Add security scanning to your continuous integration pipeline:
+
+```yaml
+# GitHub Actions example
+- name: Security check with Bandit
+  run: bandit -r src/ -f json -o bandit-results.json
+
+# Optional: convert results to GitHub Security format
+# (requires additional tools or post-processing)
+```
+
+#### Pre-commit Hook
+
+Configure a pre-commit hook to run Bandit before commits:
+
+```yaml
+# In .pre-commit-config.yaml
+- repo: https://github.com/PyCQA/bandit
+  rev: 1.7.5
+  hooks:
+    - id: bandit
+      args: ["-r", "src"]
+```
+
+### Responding to Security Findings
+
+When Bandit identifies security issues:
+
+1. **Understand the risk**: Read the detailed explanation to understand the potential vulnerability
+2. **Fix high-severity issues immediately**: These represent significant security risks
+3. **Document deliberate exceptions**: If a finding is a false positive, document why and use an inline ignore comment
+4. **Review regularly**: Security standards evolve, so regular scanning is essential
+
+### False Positives
+
+Like any static analysis tool, Bandit can produce false positives. You can exclude specific findings:
+
+```python
+# In code, to ignore a specific line
+import pickle  # nosec
+
+# For a whole file
+# nosec
+
+# Or configure globally in pyproject.toml
+```
+
+By incorporating security scanning with Bandit, you add an essential layer of protection against common security vulnerabilities, helping to ensure that your code is not just functional but also secure.
+
+## Finding Dead Code with Vulture
+
+As projects evolve, code can become obsolete but remain in the codebase, creating maintenance burdens and confusion. Vulture is a static analysis tool that identifies unused code – functions, classes, and variables that are defined but never used.
+
+### The Problem of Dead Code
+
+Dead code creates several issues:
+
+1. **Maintenance overhead**: Every line of code needs maintenance
+2. **Cognitive load**: Developers need to understand code that serves no purpose
+3. **False security**: Tests might pass while dead code goes unchecked
+4. **Misleading documentation**: Dead code can appear in documentation generators
+
+### Getting Started with Vulture
+
+Install Vulture in your virtual environment:
+
+```bash
+pip install vulture
+```
+
+Run a basic scan:
+
+```bash
+# Scan a specific file
+vulture src/my_package/main.py
+
+# Scan your entire codebase
+vulture src/
+```
+
+### What Vulture Detects
+
+Vulture identifies:
+
+#### 1. Unused Variables
+
+```python
+def process_data(data):
+    result = []  # Defined but never used
+    for item in data:
+        processed = transform(item)  # Unused variable
+        data.append(item * 2)
+    return data
+```
+
+#### 2. Unused Functions
+
+```python
+def calculate_average(numbers):
+    """Calculate the average of a list of numbers."""
+    if not numbers:
+        return 0
+    return sum(numbers) / len(numbers)
+
+# If this function is never called anywhere, Vulture will flag it
+```
+
+#### 3. Unused Classes
+
+```python
+class LegacyFormatter:
+    """Format data using the legacy method."""
+    def __init__(self, data):
+        self.data = data
+        
+    def format(self):
+        return json.dumps(self.data)
+
+# If this class is never instantiated, Vulture will flag it
+```
+
+#### 4. Unused Imports
+
+```python
+import os
+import sys  # If sys is imported but never used
+import json
+from datetime import datetime, timedelta  # If timedelta is never used
+```
+
+### Handling False Positives
+
+Vulture can sometimes flag code that's actually used but in ways it can't detect. Common cases include:
+
+- Classes used through reflection
+- Functions called in templates
+- Code used in an importable public API
+
+You can create a whitelist file to suppress these reports:
+
+```python
+# whitelist.py
+# unused_function  # vulture:ignore
+```
+
+Run Vulture with the whitelist:
+
+```bash
+vulture src/ whitelist.py
+```
+
+### Configuration and Integration
+
+Add Vulture to your workflow:
+
+#### Command Line Options
+
+```bash
+# Set minimum confidence (default is 60%)
+vulture --min-confidence 80 src/
+
+# Exclude test files
+vulture src/ --exclude "test_*.py"
+```
+
+#### CI Integration
+
+```yaml
+# GitHub Actions example
+- name: Find dead code with Vulture
+  run: vulture src/ --min-confidence 80
+```
+
+### Best Practices for Dead Code Removal
+
+1. **Verify before removing**: Confirm the code is truly unused
+2. **Use version control**: Remove code through proper commits with explanations
+3. **Update documentation**: Ensure documentation reflects the changes
+4. **Run tests**: Confirm nothing breaks when the code is removed
+5. **Look for patterns**: Clusters of dead code often indicate larger architectural issues
+
+### When to Run Vulture
+
+- Before major refactoring
+- During codebase cleanup
+- As part of regular maintenance
+- When preparing for a significant release
+- When onboarding new team members (helps them focus on what matters)
+
+Regularly checking for and removing dead code keeps your codebase lean and maintainable. It also provides insights into how your application has evolved and may highlight areas where design improvements could be made.
+
+With these additional security and code quality tools in place, your Python development workflow is now even more robust. Let's move on to Part 3, where we'll explore documentation and deployment options.

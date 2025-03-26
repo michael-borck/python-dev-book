@@ -1,0 +1,51 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "From Zero to Production: A Practical Python Development Pipeline"
+  author: "Michael Borck"
+  date: "last-modified"
+  chapters:
+    - index.qmd
+    - preface.qmd
+    - part: "Part 1: Setting the Foundation"
+      chapters:
+        - chapters/01-foundation.qmd
+    - part: "Part 2: Advancing Your Workflow"
+      chapters:
+        - chapters/02-workflow.qmd
+    - part: "Part 3: Documentation and Deployment"
+      chapters:
+        - chapters/03-documentation.qmd
+    - part: "Part 4: Case Study"
+      chapters:
+        - chapters/04-case-study.qmd
+    - chapters/05-conclusion.qmd
+    - part: "Appendices"
+      chapters:
+        - appendices/a-checklist.qmd
+        - appendices/b-tools.qmd
+        - appendices/c-glossary.qmd
+  
+  page-navigation: true
+  sidebar:
+    style: docked
+    search: true
+  repo-url: https://github.com/yourusername/python-dev-book
+  repo-actions: [edit, issue]
+  downloads: [pdf, epub]
+  sharing: [twitter, facebook, linkedin]
+
+format:
+  html:
+    theme: cosmo
+    code-copy: true
+    code-tools: true
+    toc: true
+  pdf:
+    documentclass: scrbook
+    colorlinks: true
+  epub:
+    toc: true
+    cover-image: images/cover.png
