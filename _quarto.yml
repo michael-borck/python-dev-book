@@ -46,7 +46,7 @@ format:
     code-copy: true
     code-tools: true
     toc: true
-    toc-depth: 
+    toc-depth: 3
     metadata:
       title: "From Zero to Production: A Practical Python Development Pipeline"
       description: "A comprehensive guide to Python development practices, tools, and workflows"
