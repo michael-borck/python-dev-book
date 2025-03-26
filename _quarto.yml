@@ -32,6 +32,8 @@ book:
   sidebar:
     style: docked
     search: true
+    collapse-level: 2  # Headings at this level and below will be collapsed
+    toc-depth: 3       # Show headings up to this level in sidebar
   repo-url: https://github.com/yourusername/python-dev-book
   repo-actions: [edit, issue]
   downloads: [pdf, epub]
@@ -44,6 +46,7 @@ format:
     code-copy: true
     code-tools: true
     toc: true
+    toc-depth: 
     metadata:
       title: "From Zero to Production: A Practical Python Development Pipeline"
       description: "A comprehensive guide to Python development practices, tools, and workflows"
@@ -52,6 +55,10 @@ format:
   pdf:
     documentclass: scrbook
     colorlinks: true
+    toc: true
+    toc-depth: 3
+    cover-image: images/cover.png
   epub:
     toc: true
+    toc-depth: 3
     cover-image: images/cover.png
