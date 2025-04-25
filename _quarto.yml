@@ -41,10 +41,11 @@ book:
 format:
   html:
     theme: cosmo
-    code-copy: true
-    code-tools: true
-    toc: true
-    toc-depth: 3
+    cover-image: images/cover.png
+    css: styles.css
+    downloads:
+      - pdf
+      - epub
     metadata:
       title: "From Zero to Production: A Practical Python Development Pipeline"
       description: "A comprehensive guide to Python development practices, tools, and workflows"
