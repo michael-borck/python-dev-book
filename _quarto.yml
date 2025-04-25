@@ -18,46 +18,57 @@ book:
     - chapters/07-conclusion.qmd
     - acknowledgments.qmd
     - references.qmd
-    - part: "Appendices"
-      chapters:
-        - appendices/a-checklist.qmd
-        - appendices/b-tools.qmd
-        - appendices/c-glossary.qmd
-        - appendices/d-bash-scaffold-script.qmd
-        - appendices/e-cookiecutter.qmd
-        - appendices/f-ai-tools.qmd
-  page-navigation: true
+
+  appendices:
+    - appendices/a-checklist.qmd
+    - appendices/b-tools.qmd
+    - appendices/c-glossary.qmd
+    - appendices/d-bash-scaffold-script.qmd
+    - appendices/e-cookiecutter.qmd
+    - appendices/f-ai-tools.qmd
+
   sidebar:
     style: docked
     search: true
-    collapse-level: 2  # Headings at this level and below will be collapsed
-    toc-depth: 3       # Show headings up to this level in sidebar
+    collapse-level: 2
+    toc-depth: 3
+
+website:
+  site-url: https://michael-borck.github.io/python-dev-book
+  favicon: assets/favicon.png
   repo-url: https://github.com/michael-borck/python-dev-book
   repo-actions: [edit, issue]
+  open-graph: true
   downloads: [pdf, epub]
-  sharing: [twitter, facebook, linkedin]
-  site-url: https://michael-borck.github.io/python-dev-book/
+  sharing: [twitter, linkedin]
 
 format:
   html:
     theme: cosmo
     cover-image: images/cover.png
     css: styles.css
-    downloads:
-      - pdf
-      - epub
+    downloads: [pdf, epub]
+    code-copy: true
+    highlight-style: github
     metadata:
       title: "From Zero to Production: A Practical Python Development Pipeline"
       description: "A comprehensive guide to Python development practices, tools, and workflows"
       keywords: "python, development, best practices, testing, CI/CD, packaging"
     sitemap: true
+
   pdf:
     documentclass: scrbook
     colorlinks: true
     toc: true
     toc-depth: 3
     cover-image: images/cover.png
+
   epub:
     toc: true
     toc-depth: 3
     cover-image: images/cover.png
+
+execute:
+  enabled: false
+  freeze: auto
+
