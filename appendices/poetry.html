@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>From Zero to Production: A Practical Python Development Pipeline - Appendix M — Poetry - Modern Python Packaging and Dependency Management</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../appendices/pdm.html" rel="next">
+<link href="../appendices/uv.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../appendices/glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="../appendices/poetry.html"><span class="chapter-number">M</span>&nbsp; <span class="chapter-title">Poetry - Modern Python Packaging and Dependency Management</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">From Zero to Production: A Practical Python Development Pipeline</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/michael-borck/python-dev-book" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../From-Zero-to-Production--A-Practical-Python-Development-Pipeline.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../From-Zero-to-Production--A-Practical-Python-Development-Pipeline.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-foundation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setting the Foundation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Advancing Your Workflow</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-documentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Documentation and Deployment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-case-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Case Study: Building SimpleBot - A Python Development Workflow Example</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Advanced Techniques</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-advanced-techniques.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Advanced Development Techniques</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-project-management.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Project Management for Python Teams</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion: Embracing Efficient Python Development</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../acknowledgments.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary of Python Development Terms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/ai-tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">AI Tools for Python Development</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/checklist.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Python Development Workflow Checklist</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/editors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Introduction to Python IDEs and Editors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">Python Development Tools Reference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/tool-comparision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">Comparision of Python Environment and Package Management Tools</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/bash-scaffold-script.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">Python Development Pipeline Scaffold Python Script</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/cookiecutter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Cookiecutter Template</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/hatch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Hatch - Modern Python Project Management</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/conda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">J</span>&nbsp; <span class="chapter-title">Using Conda for Environment Management</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/venv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">K</span>&nbsp; <span class="chapter-title">Getting Started with venv</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/uv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">L</span>&nbsp; <span class="chapter-title">UV - High-Performance Python Package Management</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/poetry.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">M</span>&nbsp; <span class="chapter-title">Poetry - Modern Python Packaging and Dependency Management</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendices/pdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">N</span>&nbsp; <span class="chapter-title">PDM</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-poetry" id="toc-introduction-to-poetry" class="nav-link active" data-scroll-target="#introduction-to-poetry"><span class="header-section-number">M.1</span> Introduction to Poetry</a></li>
+  <li><a href="#key-features-of-poetry" id="toc-key-features-of-poetry" class="nav-link" data-scroll-target="#key-features-of-poetry"><span class="header-section-number">M.2</span> Key Features of Poetry</a>
+  <ul class="collapse">
+  <li><a href="#dependency-management" id="toc-dependency-management" class="nav-link" data-scroll-target="#dependency-management"><span class="header-section-number">M.2.1</span> Dependency Management</a></li>
+  <li><a href="#project-setup-and-configuration" id="toc-project-setup-and-configuration" class="nav-link" data-scroll-target="#project-setup-and-configuration"><span class="header-section-number">M.2.2</span> Project Setup and Configuration</a></li>
+  <li><a href="#build-and-publish-workflow" id="toc-build-and-publish-workflow" class="nav-link" data-scroll-target="#build-and-publish-workflow"><span class="header-section-number">M.2.3</span> Build and Publish Workflow</a></li>
+  </ul></li>
+  <li><a href="#getting-started-with-poetry" id="toc-getting-started-with-poetry" class="nav-link" data-scroll-target="#getting-started-with-poetry"><span class="header-section-number">M.3</span> Getting Started with Poetry</a>
+  <ul class="collapse">
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation"><span class="header-section-number">M.3.1</span> Installation</a></li>
+  <li><a href="#creating-a-new-project" id="toc-creating-a-new-project" class="nav-link" data-scroll-target="#creating-a-new-project"><span class="header-section-number">M.3.2</span> Creating a New Project</a></li>
+  <li><a href="#basic-configuration" id="toc-basic-configuration" class="nav-link" data-scroll-target="#basic-configuration"><span class="header-section-number">M.3.3</span> Basic Configuration</a></li>
+  </ul></li>
+  <li><a href="#essential-poetry-commands" id="toc-essential-poetry-commands" class="nav-link" data-scroll-target="#essential-poetry-commands"><span class="header-section-number">M.4</span> Essential Poetry Commands</a>
+  <ul class="collapse">
+  <li><a href="#managing-dependencies" id="toc-managing-dependencies" class="nav-link" data-scroll-target="#managing-dependencies"><span class="header-section-number">M.4.1</span> Managing Dependencies</a></li>
+  <li><a href="#environment-management" id="toc-environment-management" class="nav-link" data-scroll-target="#environment-management"><span class="header-section-number">M.4.2</span> Environment Management</a></li>
+  <li><a href="#building-and-publishing" id="toc-building-and-publishing" class="nav-link" data-scroll-target="#building-and-publishing"><span class="header-section-number">M.4.3</span> Building and Publishing</a></li>
+  <li><a href="#running-scripts" id="toc-running-scripts" class="nav-link" data-scroll-target="#running-scripts"><span class="header-section-number">M.4.4</span> Running Scripts</a></li>
+  </ul></li>
+  <li><a href="#advanced-poetry-features" id="toc-advanced-poetry-features" class="nav-link" data-scroll-target="#advanced-poetry-features"><span class="header-section-number">M.5</span> Advanced Poetry Features</a>
+  <ul class="collapse">
+  <li><a href="#dependency-groups" id="toc-dependency-groups" class="nav-link" data-scroll-target="#dependency-groups"><span class="header-section-number">M.5.1</span> Dependency Groups</a></li>
+  <li><a href="#version-constraints" id="toc-version-constraints" class="nav-link" data-scroll-target="#version-constraints"><span class="header-section-number">M.5.2</span> Version Constraints</a></li>
+  <li><a href="#private-repositories" id="toc-private-repositories" class="nav-link" data-scroll-target="#private-repositories"><span class="header-section-number">M.5.3</span> Private Repositories</a></li>
+  <li><a href="#script-commands" id="toc-script-commands" class="nav-link" data-scroll-target="#script-commands"><span class="header-section-number">M.5.4</span> Script Commands</a></li>
+  </ul></li>
+  <li><a href="#best-practices-with-poetry" id="toc-best-practices-with-poetry" class="nav-link" data-scroll-target="#best-practices-with-poetry"><span class="header-section-number">M.6</span> Best Practices with Poetry</a>
+  <ul class="collapse">
+  <li><a href="#project-structure" id="toc-project-structure" class="nav-link" data-scroll-target="#project-structure"><span class="header-section-number">M.6.1</span> Project Structure</a></li>
+  <li><a href="#dependency-management-strategies" id="toc-dependency-management-strategies" class="nav-link" data-scroll-target="#dependency-management-strategies"><span class="header-section-number">M.6.2</span> Dependency Management Strategies</a></li>
+  <li><a href="#version-control-practices" id="toc-version-control-practices" class="nav-link" data-scroll-target="#version-control-practices"><span class="header-section-number">M.6.3</span> Version Control Practices</a></li>
+  <li><a href="#integration-with-development-tools" id="toc-integration-with-development-tools" class="nav-link" data-scroll-target="#integration-with-development-tools"><span class="header-section-number">M.6.4</span> Integration with Development Tools</a></li>
+  </ul></li>
+  <li><a href="#integration-with-development-workflows" id="toc-integration-with-development-workflows" class="nav-link" data-scroll-target="#integration-with-development-workflows"><span class="header-section-number">M.7</span> Integration with Development Workflows</a>
+  <ul class="collapse">
+  <li><a href="#ide-integration" id="toc-ide-integration" class="nav-link" data-scroll-target="#ide-integration"><span class="header-section-number">M.7.1</span> IDE Integration</a></li>
+  <li><a href="#cicd-integration" id="toc-cicd-integration" class="nav-link" data-scroll-target="#cicd-integration"><span class="header-section-number">M.7.2</span> CI/CD Integration</a></li>
+  </ul></li>
+  <li><a href="#troubleshooting-common-issues" id="toc-troubleshooting-common-issues" class="nav-link" data-scroll-target="#troubleshooting-common-issues"><span class="header-section-number">M.8</span> Troubleshooting Common Issues</a>
+  <ul class="collapse">
+  <li><a href="#dependency-resolution-errors" id="toc-dependency-resolution-errors" class="nav-link" data-scroll-target="#dependency-resolution-errors"><span class="header-section-number">M.8.1</span> Dependency Resolution Errors</a></li>
+  <li><a href="#virtual-environment-problems" id="toc-virtual-environment-problems" class="nav-link" data-scroll-target="#virtual-environment-problems"><span class="header-section-number">M.8.2</span> Virtual Environment Problems</a></li>
+  <li><a href="#package-publishing-issues" id="toc-package-publishing-issues" class="nav-link" data-scroll-target="#package-publishing-issues"><span class="header-section-number">M.8.3</span> Package Publishing Issues</a></li>
+  </ul></li>
+  <li><a href="#comparison-with-other-tools" id="toc-comparison-with-other-tools" class="nav-link" data-scroll-target="#comparison-with-other-tools"><span class="header-section-number">M.9</span> Comparison with Other Tools</a>
+  <ul class="collapse">
+  <li><a href="#poetry-vs.-pip-venv" id="toc-poetry-vs.-pip-venv" class="nav-link" data-scroll-target="#poetry-vs.-pip-venv"><span class="header-section-number">M.9.1</span> Poetry vs.&nbsp;pip + venv</a></li>
+  <li><a href="#poetry-vs.-pipenv" id="toc-poetry-vs.-pipenv" class="nav-link" data-scroll-target="#poetry-vs.-pipenv"><span class="header-section-number">M.9.2</span> Poetry vs.&nbsp;Pipenv</a></li>
+  <li><a href="#poetry-vs.-pdm" id="toc-poetry-vs.-pdm" class="nav-link" data-scroll-target="#poetry-vs.-pdm"><span class="header-section-number">M.9.3</span> Poetry vs.&nbsp;PDM</a></li>
+  <li><a href="#poetry-vs.-hatch" id="toc-poetry-vs.-hatch" class="nav-link" data-scroll-target="#poetry-vs.-hatch"><span class="header-section-number">M.9.4</span> Poetry vs.&nbsp;Hatch</a></li>
+  </ul></li>
+  <li><a href="#when-to-use-poetry" id="toc-when-to-use-poetry" class="nav-link" data-scroll-target="#when-to-use-poetry"><span class="header-section-number">M.10</span> When to Use Poetry</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">M.11</span> Conclusion</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/michael-borck/python-dev-book/edit/main/appendices/poetry.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/michael-borck/python-dev-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Appendix M — Poetry - Modern Python Packaging and Dependency Management</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction-to-poetry" class="level2" data-number="M.1">
+<h2 data-number="M.1" class="anchored" data-anchor-id="introduction-to-poetry"><span class="header-section-number">M.1</span> Introduction to Poetry</h2>
+<p>Poetry is a modern Python package management tool designed to simplify dependency management and packaging in Python projects. Developed by Sébastien Eustace and released in 2018, Poetry aims to solve common problems in the Python ecosystem by providing a single tool to handle dependency installation, package building, and publishing.</p>
+<p>Poetry’s core philosophy is to make Python packaging more deterministic and user-friendly through declarative dependency specification, lock files for reproducible environments, and simplified commands for common workflows. By combining capabilities that traditionally required multiple tools (pip, setuptools, twine, etc.), Poetry offers a more cohesive development experience.</p>
+</section>
+<section id="key-features-of-poetry" class="level2" data-number="M.2">
+<h2 data-number="M.2" class="anchored" data-anchor-id="key-features-of-poetry"><span class="header-section-number">M.2</span> Key Features of Poetry</h2>
+<section id="dependency-management" class="level3" data-number="M.2.1">
+<h3 data-number="M.2.1" class="anchored" data-anchor-id="dependency-management"><span class="header-section-number">M.2.1</span> Dependency Management</h3>
+<p>Poetry’s dependency resolution is one of its strongest features:</p>
+<ul>
+<li><strong>Deterministic builds</strong>: Poetry resolves dependencies considering the entire dependency graph, preventing many common conflicts</li>
+<li><strong>Lock file</strong>: The <code>poetry.lock</code> file ensures consistent installations across different environments</li>
+<li><strong>Easy version specification</strong>: Simple syntax for version constraints</li>
+<li><strong>Dependency groups</strong>: Organize dependencies into development, testing, and other logical groups</li>
+</ul>
+</section>
+<section id="project-setup-and-configuration" class="level3" data-number="M.2.2">
+<h3 data-number="M.2.2" class="anchored" data-anchor-id="project-setup-and-configuration"><span class="header-section-number">M.2.2</span> Project Setup and Configuration</h3>
+<p>Poetry uses a single configuration file for project metadata and dependencies:</p>
+<ul>
+<li><strong>pyproject.toml</strong>: All project configuration lives in one standard-compliant file</li>
+<li><strong>Project scaffolding</strong>: <code>poetry new</code> command creates a standardized project structure</li>
+<li><strong>Environment management</strong>: Automatic handling of virtual environments</li>
+</ul>
+</section>
+<section id="build-and-publish-workflow" class="level3" data-number="M.2.3">
+<h3 data-number="M.2.3" class="anchored" data-anchor-id="build-and-publish-workflow"><span class="header-section-number">M.2.3</span> Build and Publish Workflow</h3>
+<p>Poetry streamlines the package distribution process:</p>
+<ul>
+<li><strong>Unified build command</strong>: <code>poetry build</code> creates both source and wheel distributions</li>
+<li><strong>Simplified publishing</strong>: <code>poetry publish</code> handles uploading to PyPI</li>
+<li><strong>Version management</strong>: Tools to bump version numbers according to semantic versioning</li>
+</ul>
+</section>
+</section>
+<section id="getting-started-with-poetry" class="level2" data-number="M.3">
+<h2 data-number="M.3" class="anchored" data-anchor-id="getting-started-with-poetry"><span class="header-section-number">M.3</span> Getting Started with Poetry</h2>
+<section id="installation" class="level3" data-number="M.3.1">
+<h3 data-number="M.3.1" class="anchored" data-anchor-id="installation"><span class="header-section-number">M.3.1</span> Installation</h3>
+<p>Poetry can be installed in several ways:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using the official installer (recommended)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sSL</span> https://install.python-poetry.org <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Using pipx</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pipx</span> install poetry</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Using pip (not recommended for most cases)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install poetry</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After installation, verify that Poetry is working:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="creating-a-new-project" class="level3" data-number="M.3.2">
+<h3 data-number="M.3.2" class="anchored" data-anchor-id="creating-a-new-project"><span class="header-section-number">M.3.2</span> Creating a New Project</h3>
+<p>To create a new project with Poetry:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new project</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> new my-project</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Project structure created:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># my-project/</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ├── my_project/</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># │   └── __init__.py</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ├── tests/</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># │   └── __init__.py</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ├── pyproject.toml</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># └── README.md</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Alternatively, initialize Poetry in an existing project:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigate to existing project</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> existing-project</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize Poetry</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> init</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This interactive command helps you create a <code>pyproject.toml</code> file with your project’s metadata and dependencies.</p>
+</section>
+<section id="basic-configuration" class="level3" data-number="M.3.3">
+<h3 data-number="M.3.3" class="anchored" data-anchor-id="basic-configuration"><span class="header-section-number">M.3.3</span> Basic Configuration</h3>
+<p>The <code>pyproject.toml</code> file is the heart of a Poetry project. Here’s a sample:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">name</span> <span class="op">=</span> <span class="st">"my-project"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">version</span> <span class="op">=</span> <span class="st">"0.1.0"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">description</span> <span class="op">=</span> <span class="st">"A sample Python project"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">authors</span> <span class="op">=</span> <span class="op">[</span><span class="st">"Your Name &lt;your.email@example.com&gt;"</span><span class="op">]</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="dt">readme</span> <span class="op">=</span> <span class="st">"README.md"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">packages</span> <span class="op">=</span> <span class="op">[{</span><span class="dt">include</span><span class="op"> =</span> <span class="st">"my_project"</span><span class="op">}]</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="dt">python</span> <span class="op">=</span> <span class="st">"^3.8"</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="dt">requests</span> <span class="op">=</span> <span class="st">"^2.28.0"</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="dt">pandas</span> <span class="op">=</span> <span class="st">"^2.0.0"</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">group</span><span class="kw">.</span><span class="dt">dev</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="dt">pytest</span> <span class="op">=</span> <span class="st">"^7.0.0"</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="dt">black</span> <span class="op">=</span> <span class="st">"^23.0.0"</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="dt">mypy</span> <span class="op">=</span> <span class="st">"^1.0.0"</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">build-system</span><span class="kw">]</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="dt">requires</span> <span class="op">=</span> <span class="op">[</span><span class="st">"poetry-core"</span><span class="op">]</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="dt">build-backend</span> <span class="op">=</span> <span class="st">"poetry.core.masonry.api"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="essential-poetry-commands" class="level2" data-number="M.4">
+<h2 data-number="M.4" class="anchored" data-anchor-id="essential-poetry-commands"><span class="header-section-number">M.4</span> Essential Poetry Commands</h2>
+<section id="managing-dependencies" class="level3" data-number="M.4.1">
+<h3 data-number="M.4.1" class="anchored" data-anchor-id="managing-dependencies"><span class="header-section-number">M.4.1</span> Managing Dependencies</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install all dependencies</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> install</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install only main dependencies (no dev dependencies)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> install <span class="at">--without</span> dev</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a new dependency</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> add requests</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a development dependency</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> add pytest <span class="at">--group</span> dev</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Update all dependencies</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> update</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Update specific packages</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> update requests pandas</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Show installed packages</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> show</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Show dependency tree</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> show <span class="at">--tree</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="environment-management" class="level3" data-number="M.4.2">
+<h3 data-number="M.4.2" class="anchored" data-anchor-id="environment-management"><span class="header-section-number">M.4.2</span> Environment Management</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create/use virtual environment</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> env use python3.10</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># List available environments</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> env list</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get information about the current environment</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> env info</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove an environment</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> env remove python3.9</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="building-and-publishing" class="level3" data-number="M.4.3">
+<h3 data-number="M.4.3" class="anchored" data-anchor-id="building-and-publishing"><span class="header-section-number">M.4.3</span> Building and Publishing</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build source and wheel distributions</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> build</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Publish to PyPI</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> publish</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Build and publish in one step</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> publish <span class="at">--build</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Publish to a custom repository</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> publish <span class="at">-r</span> my-repository</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="running-scripts" class="level3" data-number="M.4.4">
+<h3 data-number="M.4.4" class="anchored" data-anchor-id="running-scripts"><span class="header-section-number">M.4.4</span> Running Scripts</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run a Python script in the Poetry environment</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> run python script.py</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run a command defined in pyproject.toml</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> run my-command</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Activate the shell in the Poetry environment</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> shell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="advanced-poetry-features" class="level2" data-number="M.5">
+<h2 data-number="M.5" class="anchored" data-anchor-id="advanced-poetry-features"><span class="header-section-number">M.5</span> Advanced Poetry Features</h2>
+<section id="dependency-groups" class="level3" data-number="M.5.1">
+<h3 data-number="M.5.1" class="anchored" data-anchor-id="dependency-groups"><span class="header-section-number">M.5.1</span> Dependency Groups</h3>
+<p>Poetry allows organizing dependencies into logical groups:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">python</span> <span class="op">=</span> <span class="st">"^3.8"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">requests</span> <span class="op">=</span> <span class="st">"^2.28.0"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">group</span><span class="kw">.</span><span class="dt">dev</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="dt">pytest</span> <span class="op">=</span> <span class="st">"^7.0.0"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="dt">black</span> <span class="op">=</span> <span class="st">"^23.0.0"</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">group</span><span class="kw">.</span><span class="dt">docs</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="dt">sphinx</span> <span class="op">=</span> <span class="st">"^5.0.0"</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="dt">sphinx-rtd-theme</span> <span class="op">=</span> <span class="st">"^1.0.0"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Install specific groups:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install only production and docs dependencies</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> install <span class="at">--without</span> dev</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install with specific groups</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> install <span class="at">--only</span> main,dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="version-constraints" class="level3" data-number="M.5.2">
+<h3 data-number="M.5.2" class="anchored" data-anchor-id="version-constraints"><span class="header-section-number">M.5.2</span> Version Constraints</h3>
+<p>Poetry supports various version constraint syntaxes:</p>
+<ul>
+<li><code>^1.2.3</code>: Compatible with 1.2.3 &lt;= version &lt; 2.0.0</li>
+<li><code>~1.2.3</code>: Compatible with 1.2.3 &lt;= version &lt; 1.3.0</li>
+<li><code>&gt;=1.2.3,&lt;1.5.0</code>: Version between 1.2.3 (inclusive) and 1.5.0 (exclusive)</li>
+<li><code>1.2.3</code>: Exactly version 1.2.3</li>
+<li><code>*</code>: Any version</li>
+</ul>
+</section>
+<section id="private-repositories" class="level3" data-number="M.5.3">
+<h3 data-number="M.5.3" class="anchored" data-anchor-id="private-repositories"><span class="header-section-number">M.5.3</span> Private Repositories</h3>
+<p>Configure private package repositories:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a repository</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> config repositories.my-repo https://my-repository.example.com/simple/</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Add credentials</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> config http-basic.my-repo username password</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Install from the repository</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> add package-name <span class="at">--source</span> my-repo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="script-commands" class="level3" data-number="M.5.4">
+<h3 data-number="M.5.4" class="anchored" data-anchor-id="script-commands"><span class="header-section-number">M.5.4</span> Script Commands</h3>
+<p>Define custom commands in your <code>pyproject.toml</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">scripts</span><span class="kw">]</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="dt">my-command</span> <span class="op">=</span> <span class="st">"my_package.cli:main"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="dt">start-server</span> <span class="op">=</span> <span class="st">"my_package.server:start"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These commands become available through <code>poetry run</code> or when the package is installed.</p>
+</section>
+</section>
+<section id="best-practices-with-poetry" class="level2" data-number="M.6">
+<h2 data-number="M.6" class="anchored" data-anchor-id="best-practices-with-poetry"><span class="header-section-number">M.6</span> Best Practices with Poetry</h2>
+<section id="project-structure" class="level3" data-number="M.6.1">
+<h3 data-number="M.6.1" class="anchored" data-anchor-id="project-structure"><span class="header-section-number">M.6.1</span> Project Structure</h3>
+<p>A recommended project structure for Poetry projects:</p>
+<pre><code>my_project/
+├── src/
+│   └── my_package/         # Main package code
+│       ├── __init__.py
+│       └── module.py
+├── tests/                  # Test files
+│   ├── __init__.py
+│   └── test_module.py
+├── docs/                   # Documentation
+├── pyproject.toml          # Poetry configuration
+├── poetry.lock             # Lock file (auto-generated)
+└── README.md               # Project documentation</code></pre>
+<p>To use the <code>src</code> layout with Poetry:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">]</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="dt">packages</span> <span class="op">=</span> <span class="op">[{</span><span class="dt">include</span><span class="op"> =</span> <span class="st">"my_package"</span><span class="op">, </span><span class="dt">from</span><span class="op"> =</span> <span class="st">"src"</span><span class="op">}]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dependency-management-strategies" class="level3" data-number="M.6.2">
+<h3 data-number="M.6.2" class="anchored" data-anchor-id="dependency-management-strategies"><span class="header-section-number">M.6.2</span> Dependency Management Strategies</h3>
+<ol type="1">
+<li><p><strong>Minimal Version Specification</strong>: Use <code>^</code> (caret) constraint to allow compatible updates</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dt">requests</span> <span class="op">=</span> <span class="st">"^2.28.0"</span>  <span class="co"># Allows any 2.x.y version &gt;= 2.28.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Development vs.&nbsp;Production Dependencies</strong>: Use groups to separate dependencies</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Production dependencies</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">poetry</span><span class="kw">.</span><span class="dt">group</span><span class="kw">.</span><span class="dt">dev</span><span class="kw">.</span><span class="dt">dependencies</span><span class="kw">]</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Development-only dependencies</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Update Strategy</strong>: Regularly update the lock file</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Update dependencies and lock file</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> update</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Regenerate lock file based on pyproject.toml</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> lock <span class="at">--no-update</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+</section>
+<section id="version-control-practices" class="level3" data-number="M.6.3">
+<h3 data-number="M.6.3" class="anchored" data-anchor-id="version-control-practices"><span class="header-section-number">M.6.3</span> Version Control Practices</h3>
+<ol type="1">
+<li><p><strong>Always commit the lock file</strong>: The <code>poetry.lock</code> file ensures reproducible builds</p></li>
+<li><p><strong>Consider a CI step to verify lock file consistency</strong>:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In GitHub Actions</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Verify poetry.lock is up to date</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">run</span><span class="kw">:</span><span class="at"> poetry lock --check</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+</section>
+<section id="integration-with-development-tools" class="level3" data-number="M.6.4">
+<h3 data-number="M.6.4" class="anchored" data-anchor-id="integration-with-development-tools"><span class="header-section-number">M.6.4</span> Integration with Development Tools</h3>
+<section id="code-formatting-and-linting" class="level4" data-number="M.6.4.1">
+<h4 data-number="M.6.4.1" class="anchored" data-anchor-id="code-formatting-and-linting"><span class="header-section-number">M.6.4.1</span> Code Formatting and Linting</h4>
+<p>Configure tools like Black and Ruff in <code>pyproject.toml</code>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">black</span><span class="kw">]</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">line-length</span> <span class="op">=</span> <span class="dv">88</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="dt">target-version</span> <span class="op">=</span> <span class="op">[</span><span class="st">"py39"</span><span class="op">]</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">ruff</span><span class="kw">]</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="dt">select</span> <span class="op">=</span> <span class="op">[</span><span class="st">"E"</span><span class="op">,</span> <span class="st">"F"</span><span class="op">,</span> <span class="st">"I"</span><span class="op">]</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="dt">line-length</span> <span class="op">=</span> <span class="dv">88</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="type-checking" class="level4" data-number="M.6.4.2">
+<h4 data-number="M.6.4.2" class="anchored" data-anchor-id="type-checking"><span class="header-section-number">M.6.4.2</span> Type Checking</h4>
+<p>Configure mypy in <code>pyproject.toml</code>:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">tool</span><span class="kw">.</span><span class="dt">mypy</span><span class="kw">]</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="dt">python_version</span> <span class="op">=</span> <span class="st">"3.9"</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="dt">warn_return_any</span> <span class="op">=</span> <span class="cn">true</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="dt">disallow_untyped_defs</span> <span class="op">=</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+</section>
+<section id="integration-with-development-workflows" class="level2" data-number="M.7">
+<h2 data-number="M.7" class="anchored" data-anchor-id="integration-with-development-workflows"><span class="header-section-number">M.7</span> Integration with Development Workflows</h2>
+<section id="ide-integration" class="level3" data-number="M.7.1">
+<h3 data-number="M.7.1" class="anchored" data-anchor-id="ide-integration"><span class="header-section-number">M.7.1</span> IDE Integration</h3>
+<p>Poetry integrates well with most Python IDEs:</p>
+<section id="vs-code" class="level4" data-number="M.7.1.1">
+<h4 data-number="M.7.1.1" class="anchored" data-anchor-id="vs-code"><span class="header-section-number">M.7.1.1</span> VS Code</h4>
+<ol type="1">
+<li>Install the Python extension</li>
+<li>Configure VS Code to use Poetry’s environment:
+<ul>
+<li>It should detect the Poetry environment automatically</li>
+<li>Or set <code>python.poetryPath</code> in settings</li>
+</ul></li>
+</ol>
+</section>
+<section id="pycharm" class="level4" data-number="M.7.1.2">
+<h4 data-number="M.7.1.2" class="anchored" data-anchor-id="pycharm"><span class="header-section-number">M.7.1.2</span> PyCharm</h4>
+<ol type="1">
+<li>Go to Settings → Project → Python Interpreter</li>
+<li>Add the Poetry-created interpreter (typically in <code>~/.cache/pypoetry/virtualenvs/</code>)</li>
+<li>Or use PyCharm’s Poetry plugin</li>
+</ol>
+</section>
+</section>
+<section id="cicd-integration" class="level3" data-number="M.7.2">
+<h3 data-number="M.7.2" class="anchored" data-anchor-id="cicd-integration"><span class="header-section-number">M.7.2</span> CI/CD Integration</h3>
+<section id="github-actions-example" class="level4" data-number="M.7.2.1">
+<h4 data-number="M.7.2.1" class="anchored" data-anchor-id="github-actions-example"><span class="header-section-number">M.7.2.1</span> GitHub Actions Example</h4>
+<div class="sourceCode" id="cb22"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Python CI</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> main </span><span class="kw">]</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pull_request</span><span class="kw">:</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> main </span><span class="kw">]</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v3</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Set up Python</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-python@v4</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">python-version</span><span class="kw">:</span><span class="at"> </span><span class="st">"3.10"</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install Poetry</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> snok/install-poetry@v1</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">"1.5.1"</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install dependencies</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> poetry install</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run tests</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> poetry run pytest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+</section>
+<section id="troubleshooting-common-issues" class="level2" data-number="M.8">
+<h2 data-number="M.8" class="anchored" data-anchor-id="troubleshooting-common-issues"><span class="header-section-number">M.8</span> Troubleshooting Common Issues</h2>
+<section id="dependency-resolution-errors" class="level3" data-number="M.8.1">
+<h3 data-number="M.8.1" class="anchored" data-anchor-id="dependency-resolution-errors"><span class="header-section-number">M.8.1</span> Dependency Resolution Errors</h3>
+<p>If Poetry can’t resolve dependencies:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show more detailed error information</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> install <span class="at">-v</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Try updating Poetry itself</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> self update</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Try with specific versions to identify the conflict</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> add package-name==specific.version</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="virtual-environment-problems" class="level3" data-number="M.8.2">
+<h3 data-number="M.8.2" class="anchored" data-anchor-id="virtual-environment-problems"><span class="header-section-number">M.8.2</span> Virtual Environment Problems</h3>
+<p>For environment-related issues:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get environment information</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> env info</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a fresh environment</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> env remove <span class="at">--all</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> install</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a specific Python version</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> env use /path/to/python</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="package-publishing-issues" class="level3" data-number="M.8.3">
+<h3 data-number="M.8.3" class="anchored" data-anchor-id="package-publishing-issues"><span class="header-section-number">M.8.3</span> Package Publishing Issues</h3>
+<p>When facing publishing problems:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify your PyPI credentials</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> config pypi-token.pypi your-token</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check build before publishing</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> build</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Examine the resulting files in dist/</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Publish with more information</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> publish <span class="at">-v</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="comparison-with-other-tools" class="level2" data-number="M.9">
+<h2 data-number="M.9" class="anchored" data-anchor-id="comparison-with-other-tools"><span class="header-section-number">M.9</span> Comparison with Other Tools</h2>
+<section id="poetry-vs.-pip-venv" class="level3" data-number="M.9.1">
+<h3 data-number="M.9.1" class="anchored" data-anchor-id="poetry-vs.-pip-venv"><span class="header-section-number">M.9.1</span> Poetry vs.&nbsp;pip + venv</h3>
+<ul>
+<li><strong>Poetry</strong>: Single tool for environment, dependencies, and packaging</li>
+<li><strong>pip + venv</strong>: Separate tools for different aspects of the workflow</li>
+<li><strong>Key difference</strong>: Poetry adds dependency resolution and lock file</li>
+</ul>
+</section>
+<section id="poetry-vs.-pipenv" class="level3" data-number="M.9.2">
+<h3 data-number="M.9.2" class="anchored" data-anchor-id="poetry-vs.-pipenv"><span class="header-section-number">M.9.2</span> Poetry vs.&nbsp;Pipenv</h3>
+<ul>
+<li><strong>Poetry</strong>: Stronger focus on packaging and publishing</li>
+<li><strong>Pipenv</strong>: Primarily focused on application development</li>
+<li><strong>Key difference</strong>: Poetry’s packaging capabilities make it more suitable for libraries</li>
+</ul>
+</section>
+<section id="poetry-vs.-pdm" class="level3" data-number="M.9.3">
+<h3 data-number="M.9.3" class="anchored" data-anchor-id="poetry-vs.-pdm"><span class="header-section-number">M.9.3</span> Poetry vs.&nbsp;PDM</h3>
+<ul>
+<li><strong>Poetry</strong>: More opinionated, integrated experience</li>
+<li><strong>PDM</strong>: More standards-compliant, supports PEP 582</li>
+<li><strong>Key difference</strong>: Poetry’s custom installer vs.&nbsp;PDM’s closer adherence to PEP standards</li>
+</ul>
+</section>
+<section id="poetry-vs.-hatch" class="level3" data-number="M.9.4">
+<h3 data-number="M.9.4" class="anchored" data-anchor-id="poetry-vs.-hatch"><span class="header-section-number">M.9.4</span> Poetry vs.&nbsp;Hatch</h3>
+<ul>
+<li><strong>Poetry</strong>: Focus on dependency management and packaging</li>
+<li><strong>Hatch</strong>: Focus on project management and multi-environment workflows</li>
+<li><strong>Key difference</strong>: Poetry’s stronger dependency resolution vs.&nbsp;Hatch’s project lifecycle features</li>
+</ul>
+</section>
+</section>
+<section id="when-to-use-poetry" class="level2" data-number="M.10">
+<h2 data-number="M.10" class="anchored" data-anchor-id="when-to-use-poetry"><span class="header-section-number">M.10</span> When to Use Poetry</h2>
+<p>Poetry is particularly well-suited for:</p>
+<ol type="1">
+<li><strong>Library Development</strong>: Its packaging and publishing tools shine for creating distributable packages</li>
+<li><strong>Team Projects</strong>: The lock file ensures consistent environments across team members</li>
+<li><strong>Projects with Complex Dependencies</strong>: The resolver helps manage intricate dependency requirements</li>
+<li><strong>Developers Wanting an All-in-One Solution</strong>: The unified interface simplifies the development workflow</li>
+</ol>
+<p>Poetry might not be ideal for:</p>
+<ol type="1">
+<li><strong>Simple Scripts</strong>: May be overkill for very small projects</li>
+<li><strong>Projects with Unusual Build Requirements</strong>: Complex custom build processes might need more specialized tools</li>
+<li><strong>Integration with Existing pip-Based Workflows</strong>: Requires adapting established processes</li>
+</ol>
+</section>
+<section id="conclusion" class="level2" data-number="M.11">
+<h2 data-number="M.11" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">M.11</span> Conclusion</h2>
+<p>Poetry represents a significant evolution in Python package management, offering a more integrated and user-friendly approach to dependencies, environments, and packaging. Its focus on deterministic builds through the lock file mechanism and simplified workflow commands addresses many pain points in traditional Python development.</p>
+<p>While Poetry introduces its own conventions and may require adaptation for teams used to traditional tools, the benefits in terms of reproducibility and developer experience make it worth considering for both new and existing Python projects. As the tool continues to mature and the ecosystem around it grows, Poetry is establishing itself as a standard part of the modern Python development toolkit.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../appendices/uv.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">L</span>&nbsp; <span class="chapter-title">UV - High-Performance Python Package Management</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../appendices/pdm.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">N</span>&nbsp; <span class="chapter-title">PDM</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
