@@ -26,12 +26,6 @@ book:
     - appendices/e-cookiecutter.qmd
     - appendices/f-ai-tools.qmd
 
-  sidebar:
-    style: docked
-    search: true
-    collapse-level: 2
-    toc-depth: 3
-
   downloads: [pdf, epub]
   repo-url: https://github.com/michael-borck/python-dev-book
   repo-actions: [edit, issue]
