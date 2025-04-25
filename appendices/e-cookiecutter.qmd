@@ -1,0 +1,177 @@
+# Appendix E: Python Development Pipeline Cookiecutter Template
+
+This appendix introduces and explains the companion cookiecutter template for the Python Development Pipeline described in this book. The template allows you to quickly scaffold new Python projects that follow all the recommended practices, saving you time and ensuring consistency across your projects.
+
+## What is Cookiecutter?
+
+Cookiecutter is a command-line utility that creates projects from templates. It takes a template directory containing a `cookiecutter.json` file with template variables and replaces them with user-provided values, generating a project directory structure with all necessary files.
+
+## Getting Started with the Template
+
+### Prerequisites
+
+- Python 3.7 or later
+- pip package manager
+
+### Installation
+
+First, install cookiecutter:
+
+```bash
+pip install cookiecutter
+```
+
+### Creating a New Project
+
+To create a new project using our Python Development Pipeline template:
+
+```bash
+cookiecutter gh:username/python-dev-pipeline-cookiecutter
+```
+
+You'll be prompted to provide information about your project, such as:
+
+- Project name
+- Author information
+- Python version requirements
+- License type
+- Development level (basic or advanced)
+- Documentation preferences
+- CI/CD preferences
+- Package manager choice (pip-tools or uv)
+
+After answering these questions, cookiecutter will generate a complete project structure with all the configuration files and setup based on your choices.
+
+## Template Features
+
+The template implements all the best practices discussed throughout this book:
+
+### Project Structure
+
+- Uses the recommended `src` layout for better package isolation
+- Properly organized test directory
+- Documentation setup with MkDocs (if selected)
+- Clear separation of concerns across files and directories
+
+### Development Environment
+
+- Configured virtual environment instructions
+- Dependency management using either pip-tools or uv
+- `requirements.in` and `requirements-dev.in` files for clean dependency specification
+
+### Code Quality Tools
+
+- Ruff for formatting and linting
+- mypy for type checking
+- Bandit for security analysis (with advanced setup)
+- Pre-configured with sensible defaults in `pyproject.toml`
+
+### Testing
+
+- pytest setup with example tests
+- Coverage configuration
+- Test helper fixtures
+
+### Documentation
+
+- MkDocs with Material theme (if selected)
+- API documentation generation with mkdocstrings
+- Template pages for quickstart, examples, and API reference
+
+### CI/CD
+
+- GitHub Actions workflows for testing, linting, and type checking
+- Publish workflow for PyPI deployment
+- Matrix testing across Python versions
+
+## Customization Options
+
+The template offers several customization options during generation:
+
+### Basic vs. Advanced Setup
+
+- **Basic**: Lighter configuration focused on essential tools
+- **Advanced**: Full suite of tools including security scanning, stricter type checking, and comprehensive CI/CD
+
+### Documentation Options
+
+- Choose whether to include MkDocs documentation setup
+- If included, get a complete documentation structure ready for content
+
+### CI/CD Options
+
+- Include GitHub Actions workflows for automated testing and deployment
+- Configure publishing workflows for PyPI integration
+
+## Template Structure
+
+The generated project follows this structure:
+
+```
+your_project/
+├── .github/                        # GitHub specific configuration
+│   └── workflows/                  # GitHub Actions workflows
+│       ├── ci.yml                  # Continuous Integration workflow
+│       └── publish.yml             # Package publishing workflow
+├── src/                            # Main source code directory
+│   └── your_package/               # Actual Python package
+│       ├── __init__.py             # Makes the directory a package
+│       └── main.py                 # Example module
+├── tests/                          # Test suite
+│   ├── __init__.py                 # Makes tests importable
+│   └── test_main.py                # Tests for main.py
+├── docs/                           # Documentation
+│   ├── index.md                    # Main documentation page
+│   └── examples.md                 # Example usage
+├── .gitignore                      # Files to exclude from Git
+├── LICENSE                         # License file
+├── README.md                       # Project overview
+├── requirements.in                 # Direct dependencies (human-maintained)
+├── requirements-dev.in             # Development dependencies
+└── pyproject.toml                  # Project & tool configuration
+```
+
+## Post-Generation Steps
+
+After creating your project, the template provides instructions for:
+
+1. Creating and activating a virtual environment
+2. Installing dependencies
+3. Setting up version control
+4. Running initial tests
+
+The generated `README.md` includes detailed development setup instructions specific to your configuration choices.
+
+## Extending the Template
+
+You can extend or customize the template for your specific needs:
+
+### Adding Custom Components
+
+Fork the template repository and add additional files or configurations specific to your organization or preferences.
+
+### Modifying Tool Configurations
+
+The `pyproject.toml` file contains all tool configurations and can be adjusted to match your coding standards and preferences.
+
+### Creating Specialized Variants
+
+Create specialized variants of the template for different types of projects (e.g., web applications, data science, CLI tools) while maintaining the core best practices.
+
+## Best Practices for Using the Template
+
+1. **Use for new projects**: The template is designed for new projects rather than retrofitting existing ones.
+
+2. **Commit immediately after generation**: Make an initial commit right after generating the project to establish a clean baseline.
+
+3. **Review and adjust configurations**: While the defaults are sensible, review and adjust configurations to match your specific project needs.
+
+4. **Keep dependencies updated**: Regularly update the `requirements.in` files as your project evolves.
+
+5. **Follow the workflow**: The template sets up the infrastructure, but you still need to follow the development workflow described in this book.
+
+## Conclusion
+
+The Python Development Pipeline cookiecutter template encapsulates the practices and principles discussed throughout this book, allowing you to rapidly bootstrap projects with best practices already in place. By using this template, you ensure consistency across projects and can focus more on solving problems rather than setting up infrastructure.
+
+Whether you're starting a small personal project or a larger team effort, this template provides a solid foundation that can scale with your needs while maintaining professional development standards.

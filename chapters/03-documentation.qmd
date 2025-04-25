@@ -1,5 +1,5 @@
 
-# Part 3: Documentation and Deployment
+# Documentation and Deployment
 
 ## Documentation Options: From pydoc to MkDocs
 

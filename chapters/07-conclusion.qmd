@@ -68,6 +68,8 @@ Python's ecosystem continues to evolve. Stay current by:
 
 Effective Python development isn't about using every available tool—it's about creating a workflow that enhances your productivity and code quality while minimizing friction. By implementing the practices in this guide, you've built a foundation that will serve you well across projects of all sizes.
 
+Remember that you don't need to implement all these practices manually for each new project. The companion cookiecutter template (available at [URL]) encapsulates the workflow described in this book, allowing you to focus on writing code rather than setting up infrastructure.
+
 Remember that perfect is the enemy of good. Start with the basics, improve incrementally, and focus on delivering value through your code. The best development pipeline is one that you'll actually use consistently.
 
 We hope this guide helps you on your journey to more effective, enjoyable Python development. Happy coding!

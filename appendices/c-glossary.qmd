@@ -18,6 +18,7 @@
 - **Dependency**: An external package or module that your project requires to function properly.
 - **Docstring**: A string literal specified in source code that is used to document a specific segment of code.
 - **Dynamic Typing**: A programming language feature where variable types are checked during runtime rather than compile time.
+- - **Cookiecutter**: A project templating tool that helps developers create new projects with a predefined structure, configuration files, and boilerplate code. Cookiecutter uses Jinja2 templating to customize files based on user inputs during project generation.
 
 ## E
 
@@ -26,6 +27,12 @@
 ## F
 
 - **Fixture**: In testing, a piece of code that sets up a system for testing and provides test data.
+
+## G
+
+- **Git**: A distributed version control system for tracking changes in source code.
+- **GitHub Repository Template**: A repository that can be used as a starting point for new projects on GitHub. 
+- **GitHub/GitLab**: Web-based platforms for hosting Git repositories with collaboration features.
 
 ## I
 

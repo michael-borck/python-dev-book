@@ -9,25 +9,23 @@ book:
   chapters:
     - index.qmd
     - preface.qmd
-    - part: "Part 1: Setting the Foundation"
-      chapters:
-        - chapters/01-foundation.qmd
-    - part: "Part 2: Advancing Your Workflow"
-      chapters:
-        - chapters/02-workflow.qmd
-    - part: "Part 3: Documentation and Deployment"
-      chapters:
-        - chapters/03-documentation.qmd
-    - part: "Part 4: Case Study"
-      chapters:
-        - chapters/04-case-study.qmd
-    - chapters/05-conclusion.qmd
+    - chapters/01-foundation.qmd
+    - chapters/02-workflow.qmd
+    - chapters/03-documentation.qmd
+    - chapters/04-case-study.qmd
+    - chapters/05-advanced-techniques.qmd
+    - chapters/06-project-management.qmd
+    - chapters/07-conclusion.qmd
+    - acknowledgments.qmd
+    - references.qmd
     - part: "Appendices"
       chapters:
         - appendices/a-checklist.qmd
         - appendices/b-tools.qmd
         - appendices/c-glossary.qmd
-  
+        - appendices/d-bash-scaffold-script.qmd
+        - appendices/e-cookiecutter.qmd
+        - appendices/f-ai-tools.qmd
   page-navigation: true
   sidebar:
     style: docked

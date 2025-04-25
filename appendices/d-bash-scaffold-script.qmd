@@ -1,0 +1,202 @@
+# Appendix D: Python Development Pipeline Scaffold Python Script 
+
+```bash
+#!/bin/bash
+# scaffold_python_project.sh - A simple script to create a Python project with best practices
+# Usage: ./scaffold_python_project.sh my_project
+
+if [ -z "$1" ]; then
+  echo "Please provide a project name."
+  echo "Usage: ./scaffold_python_project.sh my_project"
+  exit 1
+fi
+
+PROJECT_NAME=$1
+# Convert hyphens to underscores for Python package naming conventions
+PACKAGE_NAME=$(echo $PROJECT_NAME | tr '-' '_')
+
+echo "Creating project: $PROJECT_NAME"
+echo "Package name will be: $PACKAGE_NAME"
+
+# Create project directory
+mkdir -p $PROJECT_NAME
+cd $PROJECT_NAME
+
+# Create basic structure following the recommended src layout
+# The src layout enforces proper package installation and creates clear boundaries
+mkdir -p src/$PACKAGE_NAME tests docs
+
+# Create package files
+# __init__.py makes the directory a Python package
+touch src/$PACKAGE_NAME/__init__.py
+touch src/$PACKAGE_NAME/main.py
+
+# Create test files - keeping tests separate but adjacent to the implementation
+# This follows the principle of separating implementation from tests
+touch tests/__init__.py
+touch tests/test_main.py
+
+# Create documentation placeholder - establishing documentation from the start
+# Even minimal docs are better than no docs
+echo "# $PROJECT_NAME Documentation" > docs/index.md
+
+# Create README.md with basic information
+# README is the first document anyone sees and should provide clear instructions
+echo "# $PROJECT_NAME
+
+A Python project created with best practices.
+
+## Installation
+
+\`\`\`bash
+pip install $PROJECT_NAME
+\`\`\`
+
+## Usage
+
+\`\`\`python
+from $PACKAGE_NAME import main
+\`\`\`
+
+## Development
+
+\`\`\`bash
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate
+
+# Install in development mode
+pip install -e .
+
+# Run tests
+pytest
+\`\`\`
+" > README.md
+
+# Create .gitignore file to exclude unnecessary files from version control
+# This prevents committing files that should not be in the repository
+echo "# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+# Never commit virtual environments to version control
+.venv/
+venv/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+docs/_build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+" > .gitignore
+
+# Create pyproject.toml for modern Python packaging
+# This follows PEP 517/518 standards and centralizes project configuration
+echo "[build-system]
+requires = [\"setuptools>=61.0\", \"wheel\"]
+build-backend = \"setuptools.build_meta\"
+
+[project]
+name = \"$PROJECT_NAME\"
+version = \"0.1.0\"
+description = \"A Python project created with best practices\"
+readme = \"README.md\"
+requires-python = \">=3.8\"
+authors = [
+    {name = \"Your Name\", email = \"your.email@example.com\"}
+]
+
+[project.urls]
+\"Homepage\" = \"https://github.com/yourusername/$PROJECT_NAME\"
+
+# Specify the src layout for better package isolation
+[tool.setuptools]
+package-dir = {\"\" = \"src\"}
+packages = [\"$PACKAGE_NAME\"]
+
+# Configure pytest to look in the tests directory
+[tool.pytest.ini_options]
+testpaths = [\"tests\"]
+" > pyproject.toml
+
+# Create requirements.in for direct dependencies
+# This approach is cleaner than freezing everything with pip freeze
+echo "# Project dependencies
+# Add your dependencies here, e.g.:
+# requests>=2.25.0
+" > requirements.in
+
+# Create example main.py with docstrings and type hints
+# Starting with good documentation and typing practices from the beginning
+echo "\"\"\"Main module for $PROJECT_NAME.\"\"\"
+
+def example_function(text: str) -> str:
+    \"\"\"Return a greeting message.
+
+    Args:
+        text: The text to include in the greeting.
+
+    Returns:
+        A greeting message.
+    \"\"\"
+    return f\"Hello, {text}!\"
+" > src/$PACKAGE_NAME/main.py
+
+# Create example test file
+# Tests verify that code works as expected and prevent regressions
+echo "\"\"\"Tests for the main module.\"\"\"
+
+from $PACKAGE_NAME.main import example_function
+
+def test_example_function():
+    \"\"\"Test the example function returns the expected greeting.\"\"\"
+    result = example_function(\"World\")
+    assert result == \"Hello, World!\"
+" > tests/test_main.py
+
+# Initialize git repository
+# Version control should be established from the very beginning
+git init
+git add .
+git commit -m "Initial project setup"
+
+echo ""
+echo "Project $PROJECT_NAME created successfully!"
+echo ""
+echo "Next steps:"
+echo "1. cd $PROJECT_NAME"
+echo "2. python -m venv .venv"
+echo "3. source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate"
+echo "4. pip install -e ."
+echo "5. pytest"
+echo ""
+echo "Happy coding!"
+```

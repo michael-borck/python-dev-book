@@ -1,5 +1,5 @@
 
-# Part 4: Case Study: Building SimpleBot - A Python Development Workflow Example
+# Case Study: Building SimpleBot - A Python Development Workflow Example
 
 This case study demonstrates how to apply the Python development pipeline practices to a real project. We'll walk through the development of SimpleBot, a lightweight wrapper for Large Language Models (LLMs) designed for educational settings.
 

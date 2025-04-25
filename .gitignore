@@ -4,3 +4,9 @@ _book/
 /.vscode/
 .DS_Store
 marketing/
+_scratchpad/
+_marketing/
+
+/.quarto/
+
+_notes/

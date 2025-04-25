@@ -1,5 +1,5 @@
 
-# Part 2: Advancing Your Workflow
+# Advancing Your Workflow
 
 ## Robust Dependency Management with pip-tools and uv
 

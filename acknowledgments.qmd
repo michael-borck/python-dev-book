@@ -1,0 +1,30 @@
+# Acknowledgments {.unnumbered}
+
+This book represents a collaborative effort involving both human creativity and artificial intelligence assistance. I would like to acknowledge the contributions of various individuals and tools that made this work possible.
+
+## Author
+
+**Michael Borck** (michael@borck.me) - Lead author and creator. Michael developed the core concepts, structured the book, and wrote the original content for "From Zero to Production: A Practical Python Development Pipeline."
+
+## AI Assistance
+
+This book was developed with assistance from several AI tools:
+
+- **Claude by Anthropic** - Provided editorial suggestions, helped refine concepts, and assisted with book structure and content development.
+- **Midjourney AI** - Generated the cover artwork based on prompts describing the book's themes of Python development pipelines.
+
+## Technical Production
+
+- **Quarto** - Used for document formatting and book generation
+- **GitHub** - Used for version control and collaboration
+- **GitHub Pages** - Hosts the online version of the book
+
+## Special Thanks
+
+Special thanks to the Python development community whose tools, frameworks, and best practices form the foundation of this book. The vibrant ecosystem of Python developers continually pushing the boundaries of what's possible with the language has been an inspiration.
+
+Also thanks to the educators and mentors who emphasize practical, sustainable development practices over quick-but-fragile solutions.
+
+---
+
+*Note: While AI tools were used in the production of this book, all content reflects the author's intentions and has been reviewed by humans. The Python development practices presented aim to balance simplicity with robustness - embracing the book's theme of "Simple but not Simplistic."*
