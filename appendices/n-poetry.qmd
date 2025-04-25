@@ -1,4 +1,4 @@
-# Appendix G: Poetry - Modern Python Packaging and Dependency Management
+# Appendix N: Poetry - Modern Python Packaging and Dependency Management
 
 ## Introduction to Poetry
 
@@ -299,7 +299,7 @@ packages = [{include = "my_package", from = "src"}]
     ```toml
     [tool.poetry.dependencies]
     # Production dependencies
-    
+
     [tool.poetry.group.dev.dependencies]
     # Development-only dependencies
     ```
@@ -309,7 +309,7 @@ packages = [{include = "my_package", from = "src"}]
     ```bash
     # Update dependencies and lock file
     poetry update
-    
+
     # Regenerate lock file based on pyproject.toml
     poetry lock --no-update
     ```
@@ -390,20 +390,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
-    
+
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
         version: "1.5.1"
-    
+
     - name: Install dependencies
       run: poetry install
-    
+
     - name: Run tests
       run: poetry run pytest
 ```

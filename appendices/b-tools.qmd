@@ -1,5 +1,4 @@
-
-# Appendix A: Python Development Tools Reference
+# Appendix B: Python Development Tools Reference
 
 This reference provides brief descriptions of the development tools mentioned throughout the guide, organized by their primary function.
 
@@ -65,7 +64,7 @@ This reference provides brief descriptions of the development tools mentioned th
 
 - **Cookiecutter**: A command-line utility that creates projects from templates, enabling consistent project setup with predefined structure and configurations. It uses a templating system to generate files and directories based on user inputs.
 - **GitHub Repository Templates**: A GitHub feature that allows repositories to serve as templates for new projects. Users can generate new repositories with the same directory structure and files without needing to install additional tools. Unlike cookiecutter, GitHub templates don't support parameterization but offer a zero-installation approach to project scaffolding.
-  
+
 ## Advanced Tools
 
 - **Cython**: A language that makes writing C extensions for Python as easy as writing Python.

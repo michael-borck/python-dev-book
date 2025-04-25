@@ -1,4 +1,4 @@
-# Introduction
+# Preface {.unnumbered}
 
 The Python ecosystem has grown tremendously over the past decade, bringing with it an explosion of tools, frameworks, and practices. While this rich ecosystem offers powerful capabilities, it often leaves developers—especially those new to Python—feeling overwhelmed by choice paralysis. Which virtual environment tool should I use? How should I format my code? What's the best way to manage dependencies? How do I set up testing? The questions seem endless.
 
@@ -28,7 +28,7 @@ Yes, including a paragraph about editors in the main document would be valuable.
 
 ## Development Environments and Editor Choice
 
-Throughout this guide, we focus on practices and workflows that remain consistent regardless of your chosen development environment. Whether you prefer a full-featured IDE like PyCharm, a lightweight but extensible editor like VS Code, or keyboard-centric tools like Vim or Emacs, the principles we cover apply universally. 
+Throughout this guide, we focus on practices and workflows that remain consistent regardless of your chosen development environment. Whether you prefer a full-featured IDE like PyCharm, a lightweight but extensible editor like VS Code, or keyboard-centric tools like Vim or Emacs, the principles we cover apply universally.
 
 While your choice of editor can significantly impact your productivity, the fundamental aspects of Python development—project structure, version control, dependency management, testing, and deployment—remain consistent across environments. Most modern editors provide integration with the tools we'll discuss, such as virtual environments, linters, formatters, and testing frameworks. Rather than prescribing specific editor configurations, this guide emphasizes the underlying practices that make for effective Python development.
 

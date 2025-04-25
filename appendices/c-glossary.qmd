@@ -1,5 +1,4 @@
-
-# Appendix B: Glossary of Python Development Terms
+# Appendix C: Glossary of Python Development Terms
 
 ## A
 
@@ -31,7 +30,7 @@
 ## G
 
 - **Git**: A distributed version control system for tracking changes in source code.
-- **GitHub Repository Template**: A repository that can be used as a starting point for new projects on GitHub. 
+- **GitHub Repository Template**: A repository that can be used as a starting point for new projects on GitHub.
 - **GitHub/GitLab**: Web-based platforms for hosting Git repositories with collaboration features.
 
 ## I

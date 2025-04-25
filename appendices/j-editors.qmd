@@ -1,7 +1,3 @@
-You raise an excellent point about covering IDEs and editors, which would complement your focus on Python development workflows. While the book emphasizes best practices over specific tools, a concise appendix on popular editors and their integration with Python development tools would be valuable for readers.
-
-Here's my suggestion for an appendix covering the main editors you mentioned:
-
 # Appendix J: Python Development Environments
 
 ## Introduction to Python IDEs and Editors
