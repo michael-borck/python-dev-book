@@ -8,7 +8,6 @@ book:
   date: "last-modified"
   chapters:
     - index.qmd
-    - preface.qmd
     - chapters/01-foundation.qmd
     - chapters/02-workflow.qmd
     - chapters/03-documentation.qmd
@@ -33,14 +32,14 @@ book:
     collapse-level: 2
     toc-depth: 3
 
+  downloads: [pdf, epub]
+  repo-url: https://github.com/michael-borck/python-dev-book
+  repo-actions: [edit, issue]
+
 website:
   site-url: https://michael-borck.github.io/python-dev-book
   favicon: assets/favicon.png
-  repo-url: https://github.com/michael-borck/python-dev-book
-  repo-actions: [edit, issue]
   open-graph: true
-  downloads: [pdf, epub]
-  sharing: [twitter, linkedin]
 
 format:
   html:
@@ -50,19 +49,13 @@ format:
     downloads: [pdf, epub]
     code-copy: true
     highlight-style: github
-    metadata:
-      title: "From Zero to Production: A Practical Python Development Pipeline"
-      description: "A comprehensive guide to Python development practices, tools, and workflows"
-      keywords: "python, development, best practices, testing, CI/CD, packaging"
     sitemap: true
-
   pdf:
     documentclass: scrbook
     colorlinks: true
     toc: true
     toc-depth: 3
     cover-image: images/cover.png
-
   epub:
     toc: true
     toc-depth: 3
