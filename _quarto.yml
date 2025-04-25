@@ -32,11 +32,11 @@ book:
     search: true
     collapse-level: 2  # Headings at this level and below will be collapsed
     toc-depth: 3       # Show headings up to this level in sidebar
-  repo-url: https://github.com/yourusername/python-dev-book
+  repo-url: https://github.com/michael-borck/python-dev-book
   repo-actions: [edit, issue]
   downloads: [pdf, epub]
   sharing: [twitter, facebook, linkedin]
-  site-url: https://yourusername.github.io/python-dev-book/
+  site-url: https://michael-borck.github.io/python-dev-book/
 
 format:
   html:
