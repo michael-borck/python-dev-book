@@ -1,4 +1,4 @@
-## Introduction
+# Introduction
 
 The Python ecosystem has grown tremendously over the past decade, bringing with it an explosion of tools, frameworks, and practices. While this rich ecosystem offers powerful capabilities, it often leaves developers—especially those new to Python—feeling overwhelmed by choice paralysis. Which virtual environment tool should I use? How should I format my code? What's the best way to manage dependencies? How do I set up testing? The questions seem endless.
 

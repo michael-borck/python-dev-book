@@ -8,16 +8,18 @@ book:
   date: "last-modified"
   chapters:
     - index.qmd
-    - chapters/01-foundation.qmd
-    - chapters/02-workflow.qmd
-    - chapters/03-documentation.qmd
-    - chapters/04-case-study.qmd
-    - chapters/05-advanced-techniques.qmd
-    - chapters/06-project-management.qmd
-    - chapters/07-conclusion.qmd
+    - part: "Foundations"
+      chapters:
+        - chapters/01-foundation.qmd
+        - chapters/02-workflow.qmd
+        - chapters/03-documentation.qmd
+        - chapters/04-case-study.qmd
+    - part: "Advanced"
+      chapters:
+        - chapters/05-advanced-techniques.qmd
+        - chapters/06-project-management.qmd
+        - chapters/07-conclusion.qmd
     - acknowledgments.qmd
-    - references.qmd
-
   appendices:
     - appendices/a-checklist.qmd
     - appendices/b-tools.qmd
