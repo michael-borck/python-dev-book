@@ -1,4 +1,4 @@
-# Appendix I: Getting Started with venv
+# Getting Started with venv
 
 ## Introduction to venv
 

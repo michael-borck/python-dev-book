@@ -21,20 +21,20 @@ book:
         - chapters/07-conclusion.qmd
     - acknowledgments.qmd
   appendices:
-    - appendices/a-checklist.qmd
-    - appendices/b-tools.qmd
-    - appendices/c-glossary.qmd
-    - appendices/d-conda.qmd
-    - appendices/e-bash-scaffold-script.qmd
-    - appendices/f-ai-tools.qmd
-    - appendices/g-cookiecutter.qmd
-    - appendices/h-hash.qmd
-    - appendices/i-venv.qmd
-    - appendices/j-editors.qmd
-    - appendices/k-tool-comparision.qmd
-    - appendices/l-pdm.qmd
-    - appendices/m-uv.qmd
-    - appendices/n-poetry.qmd
+    - appendices/glossary.qmd
+    - appendices/ai-tools.qmd
+    - appendices/checklist.qmd
+    - appendices/editors.qmd
+    - appendices/tools.qmd
+    - appendices/tool-comparision.qmd
+    - appendices/bash-scaffold-script.qmd
+    - appendices/cookiecutter.qmd
+    - appendices/hatch.qmd
+    - appendices/conda.qmd
+    - appendices/venv.qmd
+    - appendices/uv.qmd
+    - appendices/poetry.qmd
+    - appendices/pdm.qmd
 
   downloads: [pdf, epub]
   repo-url: https://github.com/michael-borck/python-dev-book

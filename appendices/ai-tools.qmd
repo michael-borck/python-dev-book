@@ -1,4 +1,4 @@
-# Appendix F: AI Tools for Python Development
+# AI Tools for Python Development
 
 The integration of AI into software development represents one of the most significant shifts in how developers work. This appendix provides an overview of AI tools available for Python development, guidance on how to use them effectively, and important considerations for their ethical use.
 
@@ -6,7 +6,7 @@ The integration of AI into software development represents one of the most signi
 
 ### Code Assistants and Completion Tools
 
-- **GitHub Copilot**: 
+- **GitHub Copilot**:
   - **Strengths**: Real-time code suggestions directly in your IDE; trained on public GitHub repositories; understands context from open files
   - **Best for**: Rapid code generation, boilerplate reduction, exploring implementation alternatives
   - **Integration**: Available for VS Code, Visual Studio, JetBrains IDEs, and Neovim
@@ -78,7 +78,7 @@ The quality of AI output depends significantly on how you formulate your request
     ```
     # Less effective
     "Write a function to process user data."
-    
+
     # More effective
     "Write a Python 3.10 function to process user data that:
     - Takes a dictionary of user attributes
@@ -92,7 +92,7 @@ The quality of AI output depends significantly on how you formulate your request
 
     ```
     "Here's how we write API handler functions in our project:
-    
+
     async def get_user(user_id: int) -> Dict[str, Any]:
         try:
             response = await http_client.get(f"/users/{user_id}")
@@ -100,7 +100,7 @@ The quality of AI output depends significantly on how you formulate your request
         except HTTPError as e:
             log.error(f"Failed to fetch user {user_id}: {e}")
             raise UserFetchError(f"Could not retrieve user: {e}")
-    
+
     Please write a similar function for fetching user orders."
     ```
 
@@ -109,7 +109,7 @@ The quality of AI output depends significantly on how you formulate your request
     ```
     # Initial prompt
     "Write a function to parse CSV files with pandas."
-    
+
     # Follow-up refinements
     "Now add error handling for missing files."
     "Update it to support both comma and semicolon delimiters."

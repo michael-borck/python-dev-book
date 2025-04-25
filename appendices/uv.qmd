@@ -1,4 +1,4 @@
-# Appendix M: uv - High-Performance Python Package Management
+# UV - High-Performance Python Package Management
 
 ## Introduction to uv
 

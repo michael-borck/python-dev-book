@@ -1,4 +1,4 @@
-# Appendix A: Python Development Workflow Checklist
+# Python Development Workflow Checklist
 
 This checklist provides a practical reference for setting up and maintaining Python projects of different scales. Choose the practices that match your project's complexity and team size.
 

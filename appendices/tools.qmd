@@ -1,4 +1,4 @@
-# Appendix B: Python Development Tools Reference
+# Python Development Tools Reference
 
 This reference provides brief descriptions of the development tools mentioned throughout the guide, organized by their primary function.
 

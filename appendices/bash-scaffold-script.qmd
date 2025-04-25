@@ -1,4 +1,4 @@
-# Appendix E: Python Development Pipeline Scaffold Python Script
+# Python Development Pipeline Scaffold Python Script
 
 ```bash
 #!/bin/bash

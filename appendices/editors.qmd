@@ -1,6 +1,4 @@
-# Appendix J: Python Development Environments
-
-## Introduction to Python IDEs and Editors
+# Introduction to Python IDEs and Editors
 
 While this book focuses on Python development practices rather than specific tools, your choice of development environment can significantly impact your productivity and workflow. This appendix provides a brief overview of popular editors and IDEs for Python development, with particular attention to how they integrate with the tools and practices discussed throughout this book.
 

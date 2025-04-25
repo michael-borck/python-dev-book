@@ -1,4 +1,4 @@
-# Appendix N: Poetry - Modern Python Packaging and Dependency Management
+# Poetry - Modern Python Packaging and Dependency Management
 
 ## Introduction to Poetry
 

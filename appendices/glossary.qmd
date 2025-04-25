@@ -1,4 +1,4 @@
-# Appendix C: Glossary of Python Development Terms
+# Glossary of Python Development Terms
 
 ## A
 

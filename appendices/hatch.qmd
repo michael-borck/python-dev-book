@@ -1,4 +1,4 @@
-# Appendix H: Hatch - Modern Python Project Management
+# Hatch - Modern Python Project Management
 
 ## Introduction to Hatch
 
@@ -331,10 +331,10 @@ packages = ["src/my_package"]
     ```toml
     [tool.hatch.envs.default]
     dependencies = ["pytest", "black", "ruff"]
-    
+
     [tool.hatch.envs.docs]
     dependencies = ["sphinx", "sphinx-rtd-theme"]
-    
+
     [tool.hatch.envs.security]
     dependencies = ["bandit", "safety"]
     ```
@@ -421,18 +421,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
-    
+
     - name: Install Hatch
       run: pip install hatch
-    
+
     - name: Run tests
       run: hatch run test:pytest
-    
+
     - name: Run linters
       run: hatch run lint:all
 ```

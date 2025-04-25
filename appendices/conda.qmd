@@ -1,4 +1,4 @@
-# Appendix D: Using Conda for Environment Management
+# Using Conda for Environment Management
 
 ## Introduction to Conda
 
