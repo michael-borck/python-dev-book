@@ -260,6 +260,125 @@ To automatically fix issues that Ruff can solve:
 ruff check --fix .
 ```
 
+### Hands-on: Setting Up Ruff Step-by-Step
+
+Let's walk through a practical example that demonstrates Ruff's impact on code quality. Starting with some intentionally messy Python code:
+
+```python
+# example.py - Before Ruff
+import sys,os
+from pathlib    import Path
+import json
+
+def calculate_average(numbers:list)->float:
+    return sum(numbers)/len(numbers)
+
+if __name__=='__main__':
+    data=[1,2,3,4,5]
+    result=calculate_average(data)
+    print(f'Average: {result}')
+    unused_var = 42
+```
+
+This code has several quality issues:
+- Multiple imports on one line
+- Inconsistent spacing around operators
+- Missing spaces in type hints
+- Unused imports and variables
+- Inconsistent string quote styles
+
+First, add Ruff to your project:
+
+```bash
+# Add Ruff as a development dependency
+uv add --dev ruff
+```
+
+Now configure Ruff in your `pyproject.toml`:
+
+```toml
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+
+[tool.ruff.lint]
+# Enable essential rule sets
+select = ["E", "F", "I", "W", "B"]
+ignore = ["E501"]  # Line length handled by formatter
+
+[tool.ruff.format]
+quote-style = "double"
+```
+
+Run Ruff to identify issues:
+
+```bash
+uv run ruff check example.py
+```
+
+This will show output like:
+```
+example.py:2:1: E401 Multiple imports on one line
+example.py:2:8: F401 `sys` imported but unused
+example.py:4:1: F401 `json` imported but unused
+example.py:15:5: F841 Local variable `unused_var` is assigned to but never used
+```
+
+Apply automatic fixes:
+
+```bash
+uv run ruff check --fix example.py
+uv run ruff format example.py
+```
+
+After running both commands, your code becomes:
+
+```python
+# example.py - After Ruff
+import os
+from pathlib import Path
+
+
+def calculate_average(numbers: list) -> float:
+    return sum(numbers) / len(numbers)
+
+
+if __name__ == "__main__":
+    data = [1, 2, 3, 4, 5]
+    result = calculate_average(data)
+    print(f"Average: {result}")
+```
+
+Notice the improvements:
+- Unused imports automatically removed
+- Imports properly sorted and formatted
+- Consistent spacing around operators and type hints
+- Proper string quote style
+- Clean, readable formatting
+
+### Integrating Ruff with Pre-commit Hooks
+
+To automatically apply these fixes before each commit, add this to your `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.11
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+```
+
+Install and activate the hooks:
+
+```bash
+uv add --dev pre-commit
+uv run pre-commit install
+```
+
+Now Ruff will automatically clean up your code before each commit, ensuring consistent quality across your entire project.
+
 ### Real-world Configuration Example
 
 Here's a more comprehensive configuration that balances strictness with practicality:
@@ -394,14 +513,41 @@ Automated tests provide several key benefits:
 
 ### Getting Started with pytest
 
-First, install pytest in your virtual environment:
+Add pytest as a development dependency to your project:
 
 ```bash
-# Standard installation
-pip install pytest
+# Using uv (recommended for our toolchain)
+uv add --dev pytest pytest-cov
 
-# With coverage reporting
-pip install pytest pytest-cov
+# Or using pip-tools, add to requirements-dev.in:
+# pytest>=7.0.0
+# pytest-cov
+```
+
+### Setting Up a Testing Project Structure
+
+Create a proper test directory structure in your project:
+
+```bash
+# From your project root
+mkdir -p tests
+touch tests/__init__.py
+touch tests/conftest.py  # pytest configuration file
+```
+
+Your project structure should look like:
+
+```
+my-project/
+├── src/
+│   └── my_package/
+│       ├── __init__.py
+│       └── calculations.py
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   └── test_calculations.py
+└── pyproject.toml
 ```
 
 ### Writing Your First Test
@@ -553,6 +699,48 @@ src/my_package/models.py            45     15    67%
 ----------------------------------------------------
 TOTAL                               56     17    70%
 ```
+
+### Configuring pytest for Your Project
+
+Set up pytest configuration in your `pyproject.toml` to customize default behavior:
+
+```toml
+[tool.pytest.ini_options]
+# Test discovery paths
+testpaths = ["tests"]
+
+# Default options (applied to every pytest run)
+addopts = [
+    "--cov=src",              # Enable coverage for src directory
+    "--cov-report=term-missing", # Show missing lines in terminal
+    "--cov-report=html",      # Generate HTML coverage report
+    "--strict-markers",       # Require all markers to be defined
+    "--disable-warnings",     # Suppress warnings for cleaner output
+]
+
+# Define custom test markers
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+# Minimum coverage percentage (tests fail if below this)
+# addopts = ["--cov=src", "--cov-fail-under=80"]
+```
+
+This configuration provides several benefits:
+
+1. **Automatic coverage**: Every test run includes coverage reporting
+2. **Clean output**: Suppresses unnecessary warnings while still showing errors
+3. **Test organization**: Markers help categorize and selectively run tests
+4. **Consistent behavior**: Same settings for all developers
+
+With this configuration, running `uv run pytest` automatically:
+- Discovers tests in the `tests/` directory
+- Calculates code coverage for your `src/` directory
+- Generates both terminal and HTML coverage reports
+- Applies your chosen settings consistently
 
 ### Testing Best Practices
 

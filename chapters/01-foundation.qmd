@@ -74,6 +74,39 @@ touch pyproject.toml
 git init
 ```
 
+### Applications vs. Packages: Knowing Your Project Type
+
+Understanding whether you're building an **application** or a **package** influences structure decisions and development priorities:
+
+**Python Applications** are end-user focused programs:
+- Web applications (Django/Flask projects)
+- Command-line tools and utilities
+- Desktop applications
+- Data processing scripts
+- Have clear entry points and user interfaces
+- Often include configuration files and deployment considerations
+
+**Python Packages** are developer-focused libraries:
+- Reusable code modules (like `requests` or `pandas`)
+- APIs and frameworks
+- Plugin systems
+- Focus on import interfaces and documentation
+- Published to PyPI for others to use
+
+**Key Differences in Practice:**
+
+| Aspect | Applications | Packages |
+|--------|-------------|----------|
+| **Entry point** | `main.py`, CLI commands | Import interfaces |
+| **Dependencies** | Can pin exact versions | Should use flexible ranges |
+| **Documentation** | User guides, deployment | API docs, examples |
+| **Testing focus** | End-to-end workflows | Unit tests, edge cases |
+| **Configuration** | Settings files, env vars | Initialization parameters |
+
+**Most projects start as applications** and may later extract reusable components into packages. Our recommended structure accommodates both paths—you can begin with application-focused development and naturally evolve toward package-like modularity as your codebase matures.
+
+**Practical example**: A data analysis script (application) might extract its core algorithms into a separate analytics package, while keeping the command-line interface and configuration handling in the main application.
+
 This structure promotes maintainability and follows Python's conventions. It might seem like overkill for tiny scripts, but as your project grows, you'll appreciate having this organization from the start.
 
 In the next section, we'll build on this foundation by implementing version control best practices.

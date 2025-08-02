@@ -1,34 +1,306 @@
-# Project Management for Python Teams
+# Project Management and Automation
 
-This section would focus on the human and organizational aspects of Python development:
+Moving beyond individual development practices, this chapter focuses on project-level management, automation, and collaboration workflows. We'll explore tools and techniques that help you maintain consistency, automate repetitive tasks, and establish sustainable development practices.
 
-1. **Team Collaboration Workflows**
-   - Code review best practices
-   - Pull request templates and processes
-   - Documentation standards for teams
-   - Knowledge sharing techniques
+## Task Automation with Poe the Poet
 
-2. **Monitoring and Observability**
-   - Structured logging best practices
-   - Error tracking and alerting
-   - Performance monitoring
-   - Centralized logging systems
+One of the first challenges in any Python project is managing the growing number of commands you need to run: testing, linting, formatting, building documentation, and more. While traditional Unix environments might use Makefiles, Python projects benefit from a more integrated approach.
 
-3. **Managing Technical Debt**
-   - Identifying code smells in Python
-   - Refactoring strategies and patterns
-   - Measuring and tracking code quality
-   - Planning and prioritizing technical improvements
+**Poe the Poet** provides a powerful task runner that integrates seamlessly with your `pyproject.toml` file, offering a cross-platform alternative to Makefiles that works naturally with your existing Python toolchain.
 
-4. **Release Management**
-   - Versioning strategies
-   - Managing deprecations
-   - Release checklists and processes
-   - Handling backward compatibility
+### Setting Up Poe the Poet
 
-5. **Community and Open Source Engagement**
-   - Building and managing open source Python projects
-   - Documentation for community contributors
-   - Issue and PR management
-   - Building community around Python projects
+Add Poe the Poet as a development dependency to your project:
+
+```bash
+uv add --dev poethepoet
+```
+
+This aligns with our philosophy of keeping project tooling within the project itself, ensuring every developer has access to the same automation tools.
+
+### Defining Project Tasks
+
+Define your common development tasks in your `pyproject.toml` file:
+
+```toml
+[tool.poe.tasks]
+# Code quality tasks
+lint = "ruff check ."
+format = "ruff format ."
+type-check = "mypy src/"
+
+# Testing tasks  
+test = "pytest tests/"
+test-cov = "pytest --cov=src tests/"
+
+# Project management
+clean = { shell = "rm -rf dist/ .coverage htmlcov/ .pytest_cache/" }
+install-dev = { shell = "uv sync && pre-commit install" }
+
+# Documentation
+docs-serve = "mkdocs serve"
+docs-build = "mkdocs build"
+
+# Combined workflows
+check = ["format", "lint", "type-check", "test"]
+build = ["clean", "check", "uv build"]
+```
+
+This configuration demonstrates several key principles:
+
+1. **Single source of truth**: All project automation is defined in one place
+2. **Composable tasks**: Complex workflows are built from simpler tasks
+3. **Cross-platform compatibility**: Tasks work on Windows, macOS, and Linux
+4. **Integration with existing tools**: Works seamlessly with uv, ruff, pytest, and other tools in our stack
+
+### Advanced Task Configuration
+
+For more complex scenarios, Poe supports parameterized tasks and conditional execution:
+
+```toml
+[tool.poe.tasks]
+# Task with parameters
+test-file = { cmd = "pytest ${file}", args = [
+    { name = "file", default = "tests/", help = "Test file or directory" }
+]}
+
+# Multi-step setup task
+setup = { shell = """
+    uv sync
+    pre-commit install
+    echo "Development environment ready!"
+    """ }
+
+# Environment-specific tasks
+[tool.poe.tasks.deploy]
+shell = """
+if [ "$ENVIRONMENT" = "production" ]; then
+    echo "Deploying to production..."
+    # Add production deployment commands
+else
+    echo "Deploying to staging..."
+    # Add staging deployment commands  
+fi
+"""
+```
+
+### Running Tasks
+
+Execute your defined tasks using the `poe` command through uv:
+
+```bash
+# Run individual tasks
+uv run poe lint
+uv run poe test
+
+# Run parameterized tasks
+uv run poe test-file tests/test_specific.py
+
+# Chain multiple tasks
+uv run poe format lint test
+
+# Run complex workflows
+uv run poe check    # Runs format, lint, type-check, test in sequence
+uv run poe build    # Full build pipeline
+```
+
+### Integration with Development Workflow
+
+The power of Poe the Poet becomes apparent when integrated into your daily development routine:
+
+**Pre-commit hooks** can reference your Poe tasks:
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: poe-check
+        name: Run project checks
+        entry: uv run poe check
+        language: system
+        pass_filenames: false
+```
+
+**IDE integration** allows running tasks directly from your editor, while **CI/CD pipelines** can use the same task definitions:
+
+```yaml
+# GitHub Actions example
+- name: Run checks
+  run: uv run poe check
+```
+
+This approach eliminates the disconnect between local development and automated systems—everyone uses the same commands.
+
+## Project Setup and Structure
+
+Consistent project structure is fundamental to maintainable Python development. While Python is famously flexible, establishing conventions early saves significant time and confusion as projects grow.
+
+### Modern Python Project Layout
+
+Our recommended project structure balances simplicity with scalability:
+
+```
+my-project/
+├── pyproject.toml          # Project configuration and dependencies
+├── README.md               # Project overview and setup instructions  
+├── .gitignore             # Version control exclusions
+├── .pre-commit-config.yaml # Automated code quality checks
+├── src/                   # Source code (src layout)
+│   └── my_project/
+│       ├── __init__.py
+│       ├── main.py        # Entry point for applications
+│       └── core/          # Core modules
+├── tests/                 # Test code
+│   ├── __init__.py
+│   ├── conftest.py       # pytest configuration
+│   └── test_main.py
+├── docs/                  # Documentation
+│   └── mkdocs.yml
+└── scripts/               # Utility scripts
+    └── setup_dev.py
+```
+
+This structure follows several important principles:
+
+**Src Layout**: Placing source code in a `src/` directory prevents accidental imports of uninstalled code during development and testing. This is particularly important for ensuring your tests run against the installed package, not just local files.
+
+**Clear Separation**: Tests, documentation, and source code are clearly separated, making the project structure immediately understandable to new contributors.
+
+**Configuration Co-location**: All project configuration lives in `pyproject.toml`, providing a single source of truth for project metadata, dependencies, and tool configuration.
+
+### Initializing New Projects
+
+Create new projects following this structure using uv:
+
+```bash
+# Create a new package project
+uv init my-project --package
+cd my-project
+
+# Set up the recommended structure
+mkdir -p tests docs scripts
+touch tests/__init__.py tests/conftest.py
+
+# Add essential development dependencies
+uv add --dev pytest pytest-cov ruff mypy poethepoet pre-commit
+
+# Initialize git and pre-commit
+git init
+uv run pre-commit install
+```
+
+### Application vs. Package Considerations
+
+The structure varies slightly depending on whether you're building an **application** (end-user focused) or a **package** (library for other developers):
+
+**Applications** typically include:
+- Configuration files and settings management
+- Entry point scripts or CLI interfaces  
+- Deployment configurations
+- User documentation focused on usage
+
+**Packages** emphasize:
+- Clean, documented APIs
+- Comprehensive test coverage
+- Developer documentation  
+- Distribution metadata for PyPI
+
+Most projects start as applications and may later extract reusable components into packages. Our recommended structure accommodates both paths naturally.
+
+## Team Collaboration Workflows
+
+### Code Review Standards
+
+Establish clear expectations for code reviews that align with your automated tooling:
+
+1. **Automated checks must pass**: All pre-commit hooks and CI checks should be green before review
+2. **Test coverage requirements**: New code should include appropriate tests
+3. **Documentation updates**: Public API changes require documentation updates
+4. **Consistent style**: Rely on automated formatting (Ruff) rather than manual style discussions
+
+### Release Management
+
+Define clear release processes that leverage your automation:
+
+```toml
+[tool.poe.tasks]
+# Release preparation
+pre-release = ["check", "test-cov", "docs-build"]
+
+# Version management (using setuptools-scm for git-based versioning)
+version = "python -m setuptools_scm"
+
+# Release workflow
+release = { shell = """
+    echo "Current version: $(python -m setuptools_scm)"
+    git tag v$(python -m setuptools_scm --strip-dev)
+    git push origin --tags
+    uv build
+    twine upload dist/*
+    """ }
+```
+
+### Managing Technical Debt
+
+Use your automation to continuously monitor and address technical debt:
+
+```toml
+[tool.poe.tasks]
+# Code quality metrics
+complexity = "radon cc src/ -a"
+maintainability = "radon mi src/"  
+debt = ["complexity", "maintainability"]
+
+# Dependency analysis
+deps-outdated = "pip list --outdated"
+deps-security = "pip-audit"
+```
+
+Regular execution of these tasks helps maintain code quality and security over time.
+
+## Development Environment Standards
+
+### Editor-Agnostic Configuration  
+
+While developers may prefer different editors, project configuration should work consistently across environments. Our approach centers on `pyproject.toml` configuration that most modern Python editors understand:
+
+```toml
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I"]
+ignore = ["E501"]  # Line length handled by formatter
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_return_any = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=src --cov-report=term-missing"
+```
+
+This configuration works automatically with VS Code, PyCharm, Vim, Emacs, and other editors with Python support.
+
+### Development Environment Reproducibility
+
+Ensure consistent development environments across team members:
+
+```toml
+[tool.poe.tasks]
+doctor = { shell = """
+    echo "Python version: $(python --version)"
+    echo "uv version: $(uv --version)"  
+    echo "Project dependencies:"
+    uv pip list
+    echo "Development environment: Ready"
+    """ }
+```
+
+New team members can quickly verify their setup with `uv run poe doctor`.
+
+This chapter has established the foundation for scalable project management through automation, consistent structure, and collaborative workflows. These practices become increasingly valuable as projects grow in size and complexity, ensuring that good habits established early continue to serve the project throughout its lifecycle.
 
