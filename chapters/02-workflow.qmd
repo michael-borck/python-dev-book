@@ -1093,6 +1093,17 @@ Most Python-friendly editors support mypy:
 - PyCharm: Has built-in type checking
 - vim/neovim: Use ALE or similar plugins
 
+### The Broader Type Checking Landscape
+
+While mypy remains the most widely adopted and beginner-friendly type checker, Python's type checking ecosystem is rapidly evolving. Other notable options include:
+
+- **pyright/pylance**: Microsoft's fast, strict type checker that powers VS Code's Python extension
+- **basedmypy**: A mypy fork with stricter defaults and additional features
+- **basedpyright**: An even more aggressive fork of pyright
+- **ty**: Astral's upcoming type checker (from the makers of ruff and uv), with an alpha preview expected by PyCon 2025
+
+For learning and establishing good type annotation habits, mypy provides an excellent foundation with extensive documentation and community support. As your expertise grows, you can explore these alternatives to find the right balance of speed, strictness, and features for your projects.
+
 ### Benefits of Type Checking
 
 1. **Catch errors early**: Find type-related bugs before running code

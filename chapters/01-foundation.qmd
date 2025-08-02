@@ -21,8 +21,7 @@ my_project/
 │   └── index.md            # Main documentation page
 ├── .gitignore              # Files to exclude from Git
 ├── README.md               # Project overview and quick start
-├── requirements.in         # Direct dependencies (human-maintained)
-├── requirements.txt        # Locked dependencies (generated)
+├── requirements.txt        # Project dependencies
 └── pyproject.toml          # Tool configuration
 ```
 
@@ -43,7 +42,7 @@ While simpler projects might skip this layout, adopting it early builds good hab
 - **docs/**: Houses documentation, starting simple and growing as needed.
 - **.gitignore**: Tells Git which files to ignore (like virtual environments, cache files, etc.).
 - **README.md**: The first document anyone will see—provide clear instructions on installation and basic usage.
-- **requirements.in/requirements.txt**: Manages dependencies (we'll explain this approach in Part 2).
+- **requirements.txt**: Lists your project's dependencies. We'll explore more advanced dependency management techniques in Part 2.
 - **pyproject.toml**: Configuration for development tools like Ruff and mypy, following modern standards.
 
 ### Getting Started
@@ -304,21 +303,22 @@ pip install requests
 pip install pytest black
 ```
 
-When working on a team project or deploying to production, you'll need to track and share these dependencies. The simplest approach uses `pip freeze`:
+When working on a team project or deploying to production, you'll need to track and share these dependencies. For basic projects, you can manually maintain a `requirements.txt` file with the packages you need:
 
 ```bash
-# Capture all installed packages and their versions
-pip freeze > requirements.txt
+# Create or add packages to your requirements.txt file
+echo "requests" >> requirements.txt
+echo "pytest" >> requirements.txt
 
-# On another machine, install the exact same packages
+# Install from your requirements file
 pip install -r requirements.txt
 ```
 
-This approach works well for simple projects, especially when you're just getting started. However, as we'll see in Part 2, there are limitations to this method:
+This approach works well for simple projects, especially when you're just getting started. However, as we'll see in Part 2, there are limitations to this basic method:
 
-* It captures indirect dependencies (dependencies of your dependencies) which can make the file harder to maintain
+* It doesn't handle indirect dependencies (dependencies of your dependencies) automatically
 * It doesn't distinguish between your project's requirements and development tools
-* It can sometimes be too strict, pinning packages to versions that might not be necessary
+* It doesn't provide version locking for reproducible environments
 
 > **Looking Ahead**: In Part 2, we'll explore more robust dependency management with tools like pip-tools and uv, which solve these limitations by creating proper "lock files" while maintaining a clean list of direct dependencies. We'll also see how these tools help ensure deterministic builds - a crucial feature as your projects grow in complexity.
 
@@ -349,7 +349,7 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install initial dependencies
 pip install pytest
-pip freeze > requirements.txt
+echo "pytest" > requirements.txt
 
 # Initial Git commit
 git add .

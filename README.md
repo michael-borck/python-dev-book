@@ -58,7 +58,13 @@ While this book is primarily maintained by Michael Borck, suggestions and correc
 
 ## License
 
-The content of this book is licensed under [license details here], which means you are free to [permissions based on your chosen license].
+This project uses a dual licensing approach:
+
+- **Book Content**: Licensed under [Creative Commons Attribution 4.0 International License (CC BY 4.0)](LICENSE-CONTENT.md). You can freely share, adapt, and build upon the material for any purpose, even commercially, with attribution.
+
+- **Code Examples**: Licensed under the [MIT License](LICENSE-CODE.md). You can use, modify, and distribute the code with minimal restrictions.
+
+See the [LICENSE](LICENSE) file for complete details.
 
 ## About the Author
 
