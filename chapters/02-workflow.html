@@ -368,8 +368,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#advanced-type-hints" id="toc-advanced-type-hints" class="nav-link" data-scroll-target="#advanced-type-hints"><span class="header-section-number">2.4.6</span> Advanced Type Hints</a></li>
   <li><a href="#common-challenges-and-solutions" id="toc-common-challenges-and-solutions" class="nav-link" data-scroll-target="#common-challenges-and-solutions"><span class="header-section-number">2.4.7</span> Common Challenges and Solutions</a></li>
   <li><a href="#integration-with-your-workflow" id="toc-integration-with-your-workflow" class="nav-link" data-scroll-target="#integration-with-your-workflow"><span class="header-section-number">2.4.8</span> Integration with Your Workflow</a></li>
-  <li><a href="#benefits-of-type-checking" id="toc-benefits-of-type-checking" class="nav-link" data-scroll-target="#benefits-of-type-checking"><span class="header-section-number">2.4.9</span> Benefits of Type Checking</a></li>
-  <li><a href="#when-to-use-type-hints" id="toc-when-to-use-type-hints" class="nav-link" data-scroll-target="#when-to-use-type-hints"><span class="header-section-number">2.4.10</span> When to Use Type Hints</a></li>
+  <li><a href="#the-broader-type-checking-landscape" id="toc-the-broader-type-checking-landscape" class="nav-link" data-scroll-target="#the-broader-type-checking-landscape"><span class="header-section-number">2.4.9</span> The Broader Type Checking Landscape</a></li>
+  <li><a href="#benefits-of-type-checking" id="toc-benefits-of-type-checking" class="nav-link" data-scroll-target="#benefits-of-type-checking"><span class="header-section-number">2.4.10</span> Benefits of Type Checking</a></li>
+  <li><a href="#when-to-use-type-hints" id="toc-when-to-use-type-hints" class="nav-link" data-scroll-target="#when-to-use-type-hints"><span class="header-section-number">2.4.11</span> When to Use Type Hints</a></li>
   </ul></li>
   <li><a href="#security-analysis-with-bandit" id="toc-security-analysis-with-bandit" class="nav-link" data-scroll-target="#security-analysis-with-bandit"><span class="header-section-number">2.5</span> Security Analysis with Bandit</a>
   <ul class="collapse">
@@ -1338,8 +1339,19 @@ TOTAL                               56     17    70%</code></pre>
 </ul>
 </section>
 </section>
-<section id="benefits-of-type-checking" class="level3" data-number="2.4.9">
-<h3 data-number="2.4.9" class="anchored" data-anchor-id="benefits-of-type-checking"><span class="header-section-number">2.4.9</span> Benefits of Type Checking</h3>
+<section id="the-broader-type-checking-landscape" class="level3" data-number="2.4.9">
+<h3 data-number="2.4.9" class="anchored" data-anchor-id="the-broader-type-checking-landscape"><span class="header-section-number">2.4.9</span> The Broader Type Checking Landscape</h3>
+<p>While mypy remains the most widely adopted and beginner-friendly type checker, Python’s type checking ecosystem is rapidly evolving. Other notable options include:</p>
+<ul>
+<li><strong>pyright/pylance</strong>: Microsoft’s fast, strict type checker that powers VS Code’s Python extension</li>
+<li><strong>basedmypy</strong>: A mypy fork with stricter defaults and additional features</li>
+<li><strong>basedpyright</strong>: An even more aggressive fork of pyright</li>
+<li><strong>ty</strong>: Astral’s upcoming type checker (from the makers of ruff and uv), with an alpha preview expected by PyCon 2025</li>
+</ul>
+<p>For learning and establishing good type annotation habits, mypy provides an excellent foundation with extensive documentation and community support. As your expertise grows, you can explore these alternatives to find the right balance of speed, strictness, and features for your projects.</p>
+</section>
+<section id="benefits-of-type-checking" class="level3" data-number="2.4.10">
+<h3 data-number="2.4.10" class="anchored" data-anchor-id="benefits-of-type-checking"><span class="header-section-number">2.4.10</span> Benefits of Type Checking</h3>
 <ol type="1">
 <li><strong>Catch errors early</strong>: Find type-related bugs before running code</li>
 <li><strong>Improved IDE experience</strong>: Better code completion and refactoring</li>
@@ -1348,8 +1360,8 @@ TOTAL                               56     17    70%</code></pre>
 <li><strong>Gradual adoption</strong>: Add types where they provide the most value</li>
 </ol>
 </section>
-<section id="when-to-use-type-hints" class="level3" data-number="2.4.10">
-<h3 data-number="2.4.10" class="anchored" data-anchor-id="when-to-use-type-hints"><span class="header-section-number">2.4.10</span> When to Use Type Hints</h3>
+<section id="when-to-use-type-hints" class="level3" data-number="2.4.11">
+<h3 data-number="2.4.11" class="anchored" data-anchor-id="when-to-use-type-hints"><span class="header-section-number">2.4.11</span> When to Use Type Hints</h3>
 <p>Type hints are particularly valuable for:</p>
 <ul>
 <li>Functions with complex parameters or return values</li>

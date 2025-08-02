@@ -392,8 +392,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 │   └── index.md            # Main documentation page
 ├── .gitignore              # Files to exclude from Git
 ├── README.md               # Project overview and quick start
-├── requirements.in         # Direct dependencies (human-maintained)
-├── requirements.txt        # Locked dependencies (generated)
+├── requirements.txt        # Project dependencies
 └── pyproject.toml          # Tool configuration</code></pre>
 <section id="why-use-the-src-layout" class="level3" data-number="1.1.1">
 <h3 data-number="1.1.1" class="anchored" data-anchor-id="why-use-the-src-layout"><span class="header-section-number">1.1.1</span> Why Use the <code>src</code> Layout?</h3>
@@ -413,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>docs/</strong>: Houses documentation, starting simple and growing as needed.</li>
 <li><strong>.gitignore</strong>: Tells Git which files to ignore (like virtual environments, cache files, etc.).</li>
 <li><strong>README.md</strong>: The first document anyone will see—provide clear instructions on installation and basic usage.</li>
-<li><strong>requirements.in/requirements.txt</strong>: Manages dependencies (we’ll explain this approach in Part 2).</li>
+<li><strong>requirements.txt</strong>: Lists your project’s dependencies. We’ll explore more advanced dependency management techniques in Part 2.</li>
 <li><strong>pyproject.toml</strong>: Configuration for development tools like Ruff and mypy, following modern standards.</li>
 </ul>
 </section>
@@ -659,17 +658,18 @@ site/</code></pre>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install multiple packages</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pytest black</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>When working on a team project or deploying to production, you’ll need to track and share these dependencies. The simplest approach uses <code>pip freeze</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capture all installed packages and their versions</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> freeze <span class="op">&gt;</span> requirements.txt</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># On another machine, install the exact same packages</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This approach works well for simple projects, especially when you’re just getting started. However, as we’ll see in Part 2, there are limitations to this method:</p>
+<p>When working on a team project or deploying to production, you’ll need to track and share these dependencies. For basic projects, you can manually maintain a <code>requirements.txt</code> file with the packages you need:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create or add packages to your requirements.txt file</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"requests"</span> <span class="op">&gt;&gt;</span> requirements.txt</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"pytest"</span> <span class="op">&gt;&gt;</span> requirements.txt</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Install from your requirements file</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This approach works well for simple projects, especially when you’re just getting started. However, as we’ll see in Part 2, there are limitations to this basic method:</p>
 <ul>
-<li>It captures indirect dependencies (dependencies of your dependencies) which can make the file harder to maintain</li>
+<li>It doesn’t handle indirect dependencies (dependencies of your dependencies) automatically</li>
 <li>It doesn’t distinguish between your project’s requirements and development tools</li>
-<li>It can sometimes be too strict, pinning packages to versions that might not be necessary</li>
+<li>It doesn’t provide version locking for reproducible environments</li>
 </ul>
 <blockquote class="blockquote">
 <p><strong>Looking Ahead</strong>: In Part 2, we’ll explore more robust dependency management with tools like pip-tools and uv, which solve these limitations by creating proper “lock files” while maintaining a clean list of direct dependencies. We’ll also see how these tools help ensure deterministic builds - a crucial feature as your projects grow in complexity.</p>
@@ -700,7 +700,7 @@ site/</code></pre>
 <span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Install initial dependencies</span></span>
 <span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pytest</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> freeze <span class="op">&gt;</span> requirements.txt</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"pytest"</span> <span class="op">&gt;</span> requirements.txt</span>
 <span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial Git commit</span></span>
 <span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
